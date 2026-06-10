@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence, useMotionValue, useSpring } from 'motion/react';
+import { Analytics } from '@vercel/analytics/react';
 import { Github, Linkedin, Mail, ArrowRight, Terminal, Shield, FileText, AlertCircle, CheckCircle2 } from 'lucide-react';
 import Navbar from './components/Navbar';
 import NeuralBackground from './components/NeuralBackground';
@@ -782,6 +783,7 @@ export default function App() {
           </div>
         </footer>
       </main>
+      <Analytics />
     </div>
   );
 }
