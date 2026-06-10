@@ -7,16 +7,16 @@
   --font-body: "Inter", sans-serif;
   --font-mono: "JetBrains Mono", monospace;
 
-  --color-bg-void: #0A0A0F;
-  --color-bg-deep: #0D1117;
-  --color-bg-card: #12141A;
-  --color-text-hi: #F4F4F5;
-  --color-text-lo: #A1A1AA;
-  --color-accent-cyan: #6EE7F7;
-  --color-accent-vio: #B57BFF;
-  --color-accent-cor: #FF6B8B;
-  --color-accent-emerald: #10B981;
-  --color-rule: #2A2A3A;
+  --color-bg-void: #0C0B08;
+  --color-bg-deep: #141210;
+  --color-bg-card: #1C1A14;
+  --color-text-hi: #F0EADc;
+  --color-text-lo: #9A8A78;
+  --color-accent-cyan: #E8A040;
+  --color-accent-vio: #C87040;
+  --color-accent-cor: #8B5E3C;
+  --color-accent-emerald: #6B8C5E;
+  --color-rule: #2C2820;
 
   --animate-pulse-slow: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
@@ -32,6 +32,7 @@
 
   body {
     @apply bg-bg-void text-text-lo font-body selection:bg-accent-cyan selection:text-bg-void;
+    /* body::before grain overlay handled below */
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -44,10 +45,6 @@
 }
 
 @layer utilities {
-  .text-gradient {
-    @apply bg-clip-text text-transparent bg-linear-to-br from-accent-cyan via-accent-vio to-accent-cor;
-  }
-
   .glass-nav {
     @apply bg-[rgba(10,10,15,0.85)] backdrop-blur-lg border-b border-rule;
   }

@@ -38,7 +38,7 @@ export default function ChapterProgress() {
               className="group relative flex items-center justify-end"
             >
               <span
-                className={`absolute right-5 whitespace-nowrap font-mono text-[8px] uppercase tracking-widest bg-bg-void/80 backdrop-blur-sm px-2 py-0.5 rounded transition-opacity duration-300 ${
+                className={`absolute right-5 whitespace-nowrap font-body text-[8px] uppercase tracking-wider bg-bg-void/80 backdrop-blur-sm px-2 py-0.5 rounded transition-opacity duration-300 ${
                   isActive ? 'opacity-100 text-accent-cyan' : 'opacity-0 group-hover:opacity-100 text-text-lo'
                 }`}
               >

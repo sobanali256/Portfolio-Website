@@ -3,7 +3,6 @@ import { motion, useScroll, useTransform, AnimatePresence, useMotionValue, useSp
 import { Analytics } from '@vercel/analytics/react';
 import { Github, Linkedin, Mail, ArrowRight, Terminal, Shield, FileText, AlertCircle, CheckCircle2 } from 'lucide-react';
 import Navbar from './components/Navbar';
-import NeuralBackground from './components/NeuralBackground';
 import Typewriter from './components/Typewriter';
 import SectionHeader from './components/SectionHeader';
 import ProjectCard from './components/ProjectCard';
@@ -103,7 +102,7 @@ const projects = [
         <motion.div
           animate={{ y: [-10, 80] }}
           transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-          className="absolute top-0 left-0 w-full h-0.5 bg-accent-cyan shadow-[0_0_10px_#6EE7F7]"
+          className="absolute top-0 left-0 w-full h-0.5 bg-accent-cyan shadow-[0_0_10px_#E8A040]"
         />
       </div>
     )
@@ -162,12 +161,34 @@ const experiences = [
     ],
     tech: ["Python", "ChromaDB", "all-MiniLM", "BM25", "Claude API", "Docker"],
   },
+  {
+    period: "Apr 2026",
+    role: "117 / 1980",
+    company: "Reply Code Challenge",
+    type: "Competitive Programming",
+    points: [
+      "Ranked 117th out of 1,980 teams worldwide. Theme: multi-agent system for fraud detection.",
+      "Built a LangChain-based agent pipeline to detect fraudulent patterns, with LangFuse for cost and usage tracking across agent runs.",
+    ],
+    tech: ["LangChain", "LangFuse", "Python", "Multi-Agent"],
+  },
+  {
+    period: "2023 — Jun 2027",
+    role: "B.S. Computer Science",
+    company: "FAST NUCES",
+    type: "Education",
+    points: [
+      "Cumulative GPA 3.69.",
+      "Key coursework: Applied Machine Learning, Artificial Intelligence, Deep Learning, Cloud Computing, Database Systems, Software Engineering, Design & Analysis of Algorithms, Software Design and Architecture.",
+    ],
+    tech: ["ML", "AI", "Cloud", "Databases", "Algorithms", "Software Engineering"],
+  },
 ];
 
 const milestones = [
   { value: "3.69", label: "Cumulative GPA" },
   { value: "117 / 1980", label: "Reply Code Challenge · Apr 2026" },
-  { value: "June 2026", label: "Graduation" },
+  { value: "June 2027", label: "Graduation" },
 ];
 
 // --- Components ---
@@ -277,7 +298,6 @@ export default function App() {
     <div ref={containerRef} className="relative min-h-screen bg-bg-void selection:bg-accent-cyan selection:text-bg-void overflow-x-hidden">
       <Navbar />
       <ChapterProgress />
-      <NeuralBackground />
 
       <main className="relative z-10">
         {/* --- CHAPTER 01: THE SPARK (Hero) --- */}
@@ -305,7 +325,7 @@ export default function App() {
                   <p className="font-body text-lg md:text-2xl text-text-lo max-w-2xl mx-auto mb-12 leading-relaxed">
                     AI Engineer in Progress · Final-Year CS @ FAST NUCES
                     <br />
-                    <span className="text-sm opacity-60 mt-4 block font-mono">
+                    <span className="text-sm opacity-60 mt-4 block font-body italic">
                       From multi-agent systems to research replications — chasing why things work, not just that they work.
                     </span>
                   </p>
@@ -314,9 +334,9 @@ export default function App() {
                     href="#about"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="inline-flex items-center gap-3 px-8 py-4 bg-transparent border border-accent-cyan text-accent-cyan font-mono text-xs uppercase tracking-widest rounded-full hover:bg-accent-cyan hover:text-bg-void transition-all duration-300"
+                    className="inline-flex items-center gap-3 px-8 py-4 bg-transparent border border-accent-cyan text-accent-cyan font-mono text-xs uppercase tracking-widest rounded-sm hover:bg-accent-cyan hover:text-bg-void transition-all duration-300"
                   >
-                    [ Begin the Story ]
+                    Begin the Story
                     <ArrowRight size={16} />
                   </motion.a>
                 </motion.div>
@@ -330,7 +350,7 @@ export default function App() {
             transition={{ delay: 3, duration: 1 }}
             className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
           >
-            <span className="font-mono text-[8px] uppercase tracking-widest opacity-40">Scroll to Continue</span>
+            <span className="font-body text-[8px] uppercase tracking-widest opacity-40">Scroll to Continue</span>
             <motion.div
               animate={{ y: [0, 10, 0] }}
               transition={{ duration: 2, repeat: Infinity }}
@@ -356,7 +376,7 @@ export default function App() {
 
               <div className="space-y-6 font-body text-lg text-text-lo leading-relaxed">
                 <p>
-                  Final year CS student at <span className="text-text-hi font-medium">FAST NUCES</span>, graduating <span className="text-text-hi font-medium">June 2026</span>. I'm an AI engineer in progress exploring and building to develop both theoretical depth and hands-on intuition. From architecting multi-agent systems to implementing machine learning algorithms from scratch, I chase understanding at the level of <span className="text-accent-cyan">why things work, not just that they work</span>.
+                  Final year CS student at <span className="text-text-hi font-medium">FAST NUCES</span>, graduating <span className="text-text-hi font-medium">June 2027</span>. I'm an AI engineer in progress exploring and building to develop both theoretical depth and hands-on intuition. From architecting multi-agent systems to implementing machine learning algorithms from scratch, I chase understanding at the level of <span className="text-accent-cyan">why things work, not just that they work</span>.
                 </p>
                 <p className="border-l-2 border-accent-cyan pl-6">
                   My proudest project so far: replicating a malware detection research paper and pushing it past the original benchmarks. That kind of work — reading deeply, rebuilding carefully, then going further is exactly how I learn best.
@@ -370,7 +390,7 @@ export default function App() {
                 {milestones.map((milestone) => (
                   <div key={milestone.label}>
                     <div className="text-xl sm:text-2xl md:text-3xl font-display font-bold text-text-hi">{milestone.value}</div>
-                    <div className="font-mono text-[10px] uppercase tracking-widest text-accent-vio">{milestone.label}</div>
+                    <div className="font-body text-[10px] uppercase tracking-widest text-accent-vio opacity-80">{milestone.label}</div>
                   </div>
                 ))}
               </div>
@@ -419,11 +439,11 @@ export default function App() {
         <ChapterTransition nextNumber="03" line="Understanding demands the right tools." />
 
         {/* --- CHAPTER 03: THE TOOLKIT (Skills) --- */}
-        <section id="skills" className="relative min-h-screen py-20 sm:py-32 px-6 bg-bg-deep/50">
+        <section id="skills" className="relative py-20 sm:py-32 px-6 bg-bg-deep/50">
           <div className="max-w-7xl mx-auto">
-            <SectionHeader number="03" label="The Toolkit" title="What I Build With" className="text-center" />
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-20">
+            <SectionHeader number="03" label="The Toolkit" title="What I Build With" />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-24 gap-y-14 mt-16 max-w-3xl">
               {skills.map((skillGroup, idx) => (
                 <motion.div
                   key={skillGroup.category}
@@ -431,33 +451,16 @@ export default function App() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: idx * 0.1 }}
-                  className="bg-bg-card border border-rule p-6 sm:p-8 rounded-xl hover:border-accent-cyan/30 transition-colors group"
                 >
-                  <h3 className={`font-mono text-xs uppercase tracking-[0.2em] mb-8 ${skillColors[skillGroup.color].split(' ')[0]}`}>
-                    [ {skillGroup.category} ]
+                  <h3 className={`font-display font-bold text-xs uppercase tracking-[0.25em] mb-4 ${skillColors[skillGroup.color].split(' ')[0]}`}>
+                    {skillGroup.category}
                   </h3>
-                  <div className="flex flex-col gap-4">
-                    {skillGroup.items.map((skill) => (
-                      <div key={skill} className="flex items-center justify-between">
-                        <span className="font-body text-sm text-text-lo group-hover:text-text-hi transition-colors">{skill}</span>
-                        <div className="w-12 h-1 bg-rule rounded-full overflow-hidden">
-                          <motion.div
-                            initial={{ width: 0 }}
-                            whileInView={{ width: '100%' }}
-                            transition={{ duration: 1.5, delay: 0.5 }}
-                            className={`h-full ${skillColors[skillGroup.color].split(' ')[1]}`}
-                          />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                  <div className="border-t border-rule mb-4" />
+                  <p className="font-body text-sm text-text-lo leading-relaxed">
+                    {skillGroup.items.join(' · ')}
+                  </p>
                 </motion.div>
               ))}
-            </div>
-
-            {/* Attention Map Aesthetic Background */}
-            <div className="absolute inset-0 -z-10 opacity-5 pointer-events-none flex items-center justify-center">
-              <div className="w-[800px] h-[800px] rounded-full bg-radial from-accent-cyan to-transparent blur-3xl" />
             </div>
           </div>
         </section>
@@ -484,8 +487,8 @@ export default function App() {
             </div>
 
             <div className="mt-20 text-center">
-              <p className="font-mono text-[10px] uppercase tracking-widest opacity-40 mb-8">Each build taught something the last one couldn't.</p>
-              <a href="https://github.com/sobanali256" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-accent-cyan hover:underline font-mono text-xs uppercase tracking-widest">
+              <p className="font-body text-[10px] uppercase tracking-widest opacity-40 mb-8 italic">Each build taught something the last one couldn't.</p>
+              <a href="https://github.com/sobanali256" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-accent-cyan hover:underline font-body text-xs uppercase tracking-widest">
                 More on GitHub <Github size={14} />
               </a>
             </div>
@@ -524,11 +527,11 @@ export default function App() {
                       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-6">
                         <div>
                           <h3 className="text-2xl font-display font-bold text-text-hi uppercase tracking-tight">{exp.role}</h3>
-                          <div className="font-mono text-sm text-accent-cyan mt-1">
+                          <div className="font-body text-sm text-accent-cyan mt-1">
                             {exp.company} <span className="text-text-lo opacity-60">· {exp.type}</span>
                           </div>
                         </div>
-                        <div className="font-mono text-[10px] uppercase tracking-widest text-accent-vio whitespace-nowrap sm:pt-1">
+                        <div className="font-body text-[10px] uppercase tracking-widest text-accent-vio whitespace-nowrap sm:pt-1">
                           {exp.period}
                         </div>
                       </div>
@@ -568,53 +571,40 @@ export default function App() {
             <div>
               <SectionHeader number="06" label="The Next Chapter" title="What Comes Next" />
               <p className="font-body text-lg text-text-lo leading-relaxed mb-12 max-w-md">
-                Graduating June 2026 and looking for the right place to keep building. If you're working on something in AI worth doing well — a role, a research collaboration, a hard problem — I'd like to hear about it. I read every message.
+                Graduating June 2027 and looking for the right place to keep building. If you're working on something in AI worth doing well — a role, a research collaboration, a hard problem — I'd like to hear about it. I read every message.
               </p>
 
               <div className="space-y-8">
                 <a href="mailto:sobanali256@gmail.com" className="flex items-center gap-4 sm:gap-6 group min-w-0">
-                  <div className="w-12 h-12 shrink-0 rounded-full border border-rule flex items-center justify-center group-hover:border-accent-cyan transition-colors">
+                  <div className="w-12 h-12 shrink-0 rounded-sm border border-rule flex items-center justify-center group-hover:border-accent-cyan transition-colors">
                     <Mail size={20} className="text-text-lo group-hover:text-accent-cyan transition-colors" />
                   </div>
                   <div className="min-w-0">
-                    <div className="font-mono text-[10px] uppercase tracking-widest opacity-40">Email</div>
+                    <div className="font-body text-[10px] uppercase tracking-widest opacity-50">Email</div>
                     <div className="text-text-hi font-mono break-all">sobanali256@gmail.com</div>
                   </div>
                 </a>
                 <a href="https://linkedin.com/in/sobanali256" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 sm:gap-6 group min-w-0">
-                  <div className="w-12 h-12 shrink-0 rounded-full border border-rule flex items-center justify-center group-hover:border-accent-cyan transition-colors">
+                  <div className="w-12 h-12 shrink-0 rounded-sm border border-rule flex items-center justify-center group-hover:border-accent-cyan transition-colors">
                     <Linkedin size={20} className="text-text-lo group-hover:text-accent-cyan transition-colors" />
                   </div>
                   <div className="min-w-0">
-                    <div className="font-mono text-[10px] uppercase tracking-widest opacity-40">LinkedIn</div>
+                    <div className="font-body text-[10px] uppercase tracking-widest opacity-50">LinkedIn</div>
                     <div className="text-text-hi font-mono break-all">linkedin.com/in/sobanali256</div>
                   </div>
                 </a>
               </div>
             </div>
 
-            <div className="bg-bg-card border border-rule p-6 sm:p-10 rounded-2xl relative overflow-hidden">
-              {/* Radar Sweep Background */}
-              <div className="absolute inset-0 opacity-5 pointer-events-none">
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
-                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border border-accent-cyan rounded-full"
-                >
-                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-1/2 bg-linear-to-b from-accent-cyan to-transparent" />
-                </motion.div>
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] border border-accent-cyan/50 rounded-full" />
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200px] h-[200px] border border-accent-cyan/30 rounded-full" />
-              </div>
-
-              <form 
+            <div className="bg-bg-card border border-rule p-6 sm:p-10 rounded-sm">
+              <form
                 onSubmit={handleSubmit}
                 noValidate
-                className="relative z-10 space-y-8"
+                className="space-y-8"
               >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="space-y-2">
-                    <label className="font-mono text-[10px] uppercase tracking-widest opacity-40">Name</label>
+                    <label className="font-body text-[10px] uppercase tracking-widest opacity-50">Name</label>
                     <input 
                       name="name" 
                       type="text" 
@@ -628,7 +618,7 @@ export default function App() {
                           initial={{ opacity: 0, y: -10 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -10 }}
-                          className="flex items-center gap-2 text-accent-cor font-mono text-[9px] uppercase tracking-wider"
+                          className="flex items-center gap-2 text-accent-cor font-body text-[9px] uppercase tracking-wider"
                         >
                           <AlertCircle size={10} />
                           {formErrors.name}
@@ -637,7 +627,7 @@ export default function App() {
                     </AnimatePresence>
                   </div>
                   <div className="space-y-2">
-                    <label className="font-mono text-[10px] uppercase tracking-widest opacity-40">Email</label>
+                    <label className="font-body text-[10px] uppercase tracking-widest opacity-50">Email</label>
                     <input 
                       name="email" 
                       type="email" 
@@ -651,7 +641,7 @@ export default function App() {
                           initial={{ opacity: 0, y: -10 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -10 }}
-                          className="flex items-center gap-2 text-accent-cor font-mono text-[9px] uppercase tracking-wider"
+                          className="flex items-center gap-2 text-accent-cor font-body text-[9px] uppercase tracking-wider"
                         >
                           <AlertCircle size={10} />
                           {formErrors.email}
@@ -661,7 +651,7 @@ export default function App() {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <label className="font-mono text-[10px] uppercase tracking-widest opacity-40">Subject</label>
+                  <label className="font-body text-[10px] uppercase tracking-widest opacity-50">Subject</label>
                   <input 
                     name="subject" 
                     type="text" 
@@ -675,7 +665,7 @@ export default function App() {
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
-                        className="flex items-center gap-2 text-accent-cor font-mono text-[9px] uppercase tracking-wider"
+                        className="flex items-center gap-2 text-accent-cor font-body text-[9px] uppercase tracking-wider"
                       >
                         <AlertCircle size={10} />
                         {formErrors.subject}
@@ -684,7 +674,7 @@ export default function App() {
                   </AnimatePresence>
                 </div>
                 <div className="space-y-2">
-                  <label className="font-mono text-[10px] uppercase tracking-widest opacity-40">Message</label>
+                  <label className="font-body text-[10px] uppercase tracking-widest opacity-50">Message</label>
                   <textarea 
                     name="message" 
                     rows={4} 
@@ -698,7 +688,7 @@ export default function App() {
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
-                        className="flex items-center gap-2 text-accent-cor font-mono text-[9px] uppercase tracking-wider"
+                        className="flex items-center gap-2 text-accent-cor font-body text-[9px] uppercase tracking-wider"
                       >
                         <AlertCircle size={10} />
                         {formErrors.message}
@@ -713,10 +703,10 @@ export default function App() {
                     disabled={isSubmitting || isSuccess}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className={`w-full py-4 font-display font-bold uppercase tracking-widest rounded-lg transition-all duration-300 flex items-center justify-center gap-3 ${
-                      isSuccess 
-                        ? 'bg-accent-emerald text-bg-void' 
-                        : 'bg-linear-to-r from-accent-cyan to-accent-vio text-bg-void'
+                    className={`w-full py-4 font-display font-bold uppercase tracking-widest rounded-sm transition-all duration-300 flex items-center justify-center gap-3 ${
+                      isSuccess
+                        ? 'bg-accent-emerald text-bg-void'
+                        : 'bg-accent-cyan text-bg-void'
                     } ${isSubmitting ? 'opacity-70 cursor-wait' : ''}`}
                   >
                     {isSubmitting ? (
@@ -744,7 +734,7 @@ export default function App() {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 10 }}
-                        className="absolute -bottom-8 left-0 w-full text-center font-mono text-[10px] text-accent-emerald uppercase tracking-widest"
+                        className="absolute -bottom-8 left-0 w-full text-center font-body text-[10px] text-accent-emerald uppercase tracking-widest"
                       >
                         Thanks — I'll get back to you soon.
                       </motion.p>
@@ -754,7 +744,7 @@ export default function App() {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 10 }}
-                        className="absolute -bottom-8 left-0 w-full flex items-center justify-center gap-2 font-mono text-[10px] text-accent-cor uppercase tracking-widest"
+                        className="absolute -bottom-8 left-0 w-full flex items-center justify-center gap-2 font-body text-[10px] text-accent-cor uppercase tracking-widest"
                       >
                         <AlertCircle size={10} />
                         Something went wrong. Try again or email me directly.
@@ -770,14 +760,14 @@ export default function App() {
         {/* --- FOOTER --- */}
         <footer className="py-12 px-6 border-t border-rule bg-bg-void relative z-10">
           <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
-            <div className="font-mono text-[10px] uppercase tracking-widest opacity-40">
+            <div className="font-body text-[10px] uppercase tracking-widest opacity-40">
               © 2026 Soban Ali — written chapter by chapter
             </div>
             <div className="flex items-center gap-8">
-              <a href="https://github.com/sobanali256" target="_blank" rel="noopener noreferrer" className="font-mono text-[10px] uppercase tracking-widest hover:text-accent-cyan transition-colors">Github</a>
-              <a href="https://linkedin.com/in/sobanali256" target="_blank" rel="noopener noreferrer" className="font-mono text-[10px] uppercase tracking-widest hover:text-accent-cyan transition-colors">Linkedin</a>
+              <a href="https://github.com/sobanali256" target="_blank" rel="noopener noreferrer" className="font-body text-[10px] uppercase tracking-widest hover:text-accent-cyan transition-colors">Github</a>
+              <a href="https://linkedin.com/in/sobanali256" target="_blank" rel="noopener noreferrer" className="font-body text-[10px] uppercase tracking-widest hover:text-accent-cyan transition-colors">Linkedin</a>
             </div>
-            <div className="font-mono text-[10px] uppercase tracking-widest opacity-40">
+            <div className="font-body text-[10px] uppercase tracking-widest opacity-40">
               Lahore, Pakistan
             </div>
           </div>

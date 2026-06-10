@@ -47,7 +47,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
             )}
           </div>
         </div>
-        <p className="font-mono text-[10px] text-accent-vio uppercase tracking-[0.3em] opacity-80">
+        <p className="font-body text-[10px] text-accent-vio uppercase tracking-[0.3em] opacity-80">
           {tagline}
         </p>
       </div>

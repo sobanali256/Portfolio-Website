@@ -16,7 +16,7 @@ export default function SectionHeader({ number, label, title, className = '' }: 
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-cyan"
+          className="font-body text-[10px] uppercase tracking-[0.3em] text-accent-cyan opacity-70"
         >
           <span className="opacity-50">Chapter {number} · </span>
           <span>{label}</span>
