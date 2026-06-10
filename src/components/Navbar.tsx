@@ -1,42 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Menu, X } from 'lucide-react';
+import { chapters, scrollToChapter } from '../data/chapters';
+import useActiveSection from '../hooks/useActiveSection';
 
-const navLinks = [
-  { id: 'hero', number: '01', name: 'Signal' },
-  { id: 'about', number: '02', name: 'Origin' },
-  { id: 'skills', number: '03', name: 'Arsenal' },
-  { id: 'projects', number: '04', name: 'Deployments' },
-  { id: 'achievements', number: '05', name: 'Milestones' },
-  { id: 'contact', number: '06', name: 'Transmission' },
-];
+const chapterIds = chapters.map(c => c.id);
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState('hero');
   const [scrolled, setScrolled] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const activeSection = useActiveSection(chapterIds);
 
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };
-    
+
     const handleScroll = () => {
       setScrolled(window.scrollY > 100);
-
-      const sections = navLinks.map(link => document.getElementById(link.id));
-      const scrollPosition = window.scrollY + 100;
-
-      sections.forEach(section => {
-        if (section) {
-          const top = section.offsetTop;
-          const height = section.offsetHeight;
-          if (scrollPosition >= top && scrollPosition < top + height) {
-            setActiveSection(section.id);
-          }
-        }
-      });
     };
 
     checkMobile();
@@ -50,19 +32,7 @@ export default function Navbar() {
 
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
     e.preventDefault();
-    const element = document.getElementById(id);
-    if (element) {
-      const offset = 56; // Navbar height
-      const bodyRect = document.body.getBoundingClientRect().top;
-      const elementRect = element.getBoundingClientRect().top;
-      const elementPosition = elementRect - bodyRect;
-      const offsetPosition = elementPosition - offset;
-
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
-      });
-    }
+    scrollToChapter(id);
     setIsOpen(false);
   };
 
@@ -80,7 +50,7 @@ export default function Navbar() {
 
         {/* Desktop Links */}
         <div className="hidden md:flex items-center gap-8">
-          {navLinks.map((link) => (
+          {chapters.map((link) => (
             <a
               key={link.id}
               href={`#${link.id}`}
@@ -129,7 +99,7 @@ export default function Navbar() {
               <X size={24} />
             </button>
 
-            {navLinks.map((link, i) => (
+            {chapters.map((link, i) => (
               <motion.a
                 key={link.id}
                 href={`#${link.id}`}

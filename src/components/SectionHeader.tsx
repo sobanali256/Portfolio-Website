@@ -18,7 +18,7 @@ export default function SectionHeader({ number, label, title, className = '' }: 
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-cyan"
         >
-          <span className="opacity-50">{number} / </span>
+          <span className="opacity-50">Chapter {number} · </span>
           <span>{label}</span>
         </motion.div>
         <div className="hidden md:block w-24 h-px bg-rule/50" />
@@ -28,7 +28,7 @@ export default function SectionHeader({ number, label, title, className = '' }: 
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 1, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-        className="text-[clamp(3.5rem,8vw,7rem)] font-display font-black text-text-hi uppercase tracking-tighter leading-[0.9]"
+        className="text-[clamp(1.875rem,5vw,3.5rem)] font-display font-extrabold text-text-hi uppercase tracking-tight leading-[1.05]"
       >
         {title}
       </motion.h2>

@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence, useMotionValue, useSpring } from 'motion/react';
 import { Github, Linkedin, Mail, ArrowRight, Terminal, Shield, FileText, AlertCircle, CheckCircle2 } from 'lucide-react';
-import CustomCursor from './components/CustomCursor';
 import Navbar from './components/Navbar';
 import NeuralBackground from './components/NeuralBackground';
 import Typewriter from './components/Typewriter';
 import SectionHeader from './components/SectionHeader';
 import ProjectCard from './components/ProjectCard';
+import ChapterTransition from './components/ChapterTransition';
+import ChapterProgress from './components/ChapterProgress';
 import profilePic from './assets/pic.png';
 
 // --- Data ---
@@ -15,7 +16,7 @@ const projects = [
   {
     title: "WARROOM",
     tagline: "Multi-agent Negotiation",
-    description: "Three adversarial AI agents debate contracts so you don't have to. 75% cheaper than GPT-4o. Zero-touch role detection.",
+    description: "Three AI agents argue over contracts so humans don't have to. Multi-agent negotiation with zero-touch role detection — at 75% lower cost than a GPT-4o equivalent.",
     techStack: ["CrewAI", "OpenAI API", "Python", "React"],
     githubUrl: "https://github.com/sobanali256/War-Room",
     microAnim: (
@@ -34,7 +35,7 @@ const projects = [
   {
     title: "ML FROM SCRATCH",
     tagline: "Fundamental Algorithms",
-    description: "Implementing core machine learning concepts from first principles. Includes Naive Bayes, Logistic Regression, and Neural Networks without high-level libraries.",
+    description: "Core machine learning rebuilt from first principles: Naive Bayes, Logistic Regression, and Neural Networks in raw NumPy. No high-level libraries — the goal was understanding the math, not calling it.",
     techStack: ["NumPy", "Python", "Mathematics"],
     githubUrl: "https://github.com/sobanali256/Machine-Learning",
     microAnim: (
@@ -55,7 +56,7 @@ const projects = [
   {
     title: "MALWARE DETECTION",
     tagline: "Research Replication",
-    description: "Replicated and surpassed a 2025 research paper. 99.10% accuracy on the Malimg dataset. VGG-16 fine-tuned on grayscale-to-JET pipeline.",
+    description: "Replicated a 2025 research paper, then pushed past it: 99.10% accuracy on the Malimg dataset with VGG-16 fine-tuned on a grayscale-to-JET image pipeline.",
     techStack: ["TensorFlow", "Keras", "OpenCV", "Python"],
     githubUrl: "https://github.com/sobanali256/malware-detection-research-replication",
     microAnim: (
@@ -72,7 +73,7 @@ const projects = [
   {
     title: "TWEET SENTIMENT",
     tagline: "Large-scale NLP",
-    description: "1.6M tweets. Custom preprocessor. 40% vocabulary reduction. 0.83 AUC. Naive Bayes and Logistic Regression from first principles.",
+    description: "Sentiment at scale: 1.6M tweets through a custom preprocessor that cut vocabulary by 40%, with Naive Bayes and Logistic Regression built from first principles reaching 0.83 AUC.",
     techStack: ["Scikit-learn", "NLTK", "Pandas", "Python"],
     githubUrl: "https://github.com/sobanali256/Tweet-Sentiment-Analysis",
     microAnim: (
@@ -92,7 +93,7 @@ const projects = [
   {
     title: "RESUME ANALYZER",
     tagline: "Semantic Audit",
-    description: "OpenAI-powered semantic audit. PDF extraction. Vagueness detection. Cover letter generation. Sub-10s report. Streamlit interface.",
+    description: "An OpenAI-powered semantic audit for resumes — PDF extraction, vagueness detection, and cover letter generation, with a full report in under 10 seconds via Streamlit.",
     techStack: ["OpenAI", "PyPDF2", "Streamlit", "Python"],
     githubUrl: "https://github.com/sobanali256/AI_Resume_Analyzer",
     microAnim: (
@@ -109,7 +110,7 @@ const projects = [
   {
     title: "RASTH",
     tagline: "Full-stack Medical",
-    description: "Full-stack. Role-based portals. AWS EC2 + RDS. Real-time chat via RESTful API. Production-grade medical record storage.",
+    description: "A full-stack medical records platform: role-based portals, real-time chat over a RESTful API, deployed on AWS EC2 + RDS.",
     techStack: ["Node.js", "Express", "PostgreSQL", "AWS"],
     githubUrl: "https://github.com/sobanali256/RASTH-Db-project",
     microAnim: (
@@ -145,11 +146,27 @@ const skillColors: Record<string, string> = {
   "accent-emerald": "text-accent-emerald bg-accent-emerald",
 };
 
+const experiences = [
+  {
+    period: "Apr 2026 — Present",
+    role: "AI Intern",
+    company: "Ledelsea",
+    type: "Internship",
+    points: [
+      "Sole developer on a RAG-based solution that automates RFP proposal generation, reducing the manual effort required to produce a first draft.",
+      "Designed and built the full pipeline end-to-end, working from an initial Docker skeleton.",
+      "Implemented fixed-size chunking with all-MiniLM embeddings stored in ChromaDB.",
+      "Built hybrid search combining semantic retrieval with BM25 lexical search, with a reranker surfacing the top 10 most relevant chunks.",
+      "Integrated Claude for final proposal generation.",
+    ],
+    tech: ["Python", "ChromaDB", "all-MiniLM", "BM25", "Claude API", "Docker"],
+  },
+];
+
 const milestones = [
-  { year: "2025", title: "Rank 231 Globally", subtitle: "Code Challenge", description: "Ranked 231 globally among 10,000+ participants." },
-  { year: "2025", title: "NCEAC-HEC Certified", subtitle: "Professional Certification", description: "Certified Generative AI Application Developer." },
-  { year: "2025", title: "Advanced ML", subtitle: "Coursera", description: "Completed Advanced Learning Algorithms specialization." },
-  { year: "2023-2025", title: "5x Dean's List", subtitle: "Academic Excellence", description: "Maintained 3.69 GPA at FAST NUCES." },
+  { value: "3.69", label: "Cumulative GPA" },
+  { value: "117 / 1980", label: "Reply Code Challenge · Apr 2026" },
+  { value: "June 2026", label: "Graduation" },
 ];
 
 // --- Components ---
@@ -169,10 +186,13 @@ export default function App() {
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormState(prev => ({ ...prev, [name]: value }));
+    // Clear a prior submission failure once the user resumes editing
+    if (submitError) setSubmitError(false);
     // Clear error when user starts typing
     if (formErrors[name]) {
       setFormErrors(prev => {
@@ -185,14 +205,14 @@ export default function App() {
 
   const validateForm = () => {
     const errors: Record<string, string> = {};
-    if (!formState.name.trim()) errors.name = 'Identity required for transmission.';
+    if (!formState.name.trim()) errors.name = 'Please tell me your name.';
     if (!formState.email.trim()) {
-      errors.email = 'Return address required.';
+      errors.email = 'I need a way to reply to you.';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formState.email)) {
-      errors.email = 'Invalid frequency. Check return address format.';
+      errors.email = "That email doesn't look quite right.";
     }
-    if (!formState.subject.trim()) errors.subject = 'Signal header missing.';
-    if (!formState.message.trim()) errors.message = 'Payload empty. Transmission aborted.';
+    if (!formState.subject.trim()) errors.subject = "What's this about?";
+    if (!formState.message.trim()) errors.message = 'The message is empty.';
     
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
@@ -203,19 +223,23 @@ export default function App() {
     if (!validateForm()) return;
 
     setIsSubmitting(true);
+    setSubmitError(false);
     try {
       const response = await fetch('https://formspree.io/f/xeepkerq', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify(formState)
       });
 
-      if (response.ok) {
-        setIsSuccess(true);
-        setFormState({ name: '', email: '', subject: '', message: '' });
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
       }
+
+      setIsSuccess(true);
+      setFormState({ name: '', email: '', subject: '', message: '' });
     } catch (error) {
-      console.error('Transmission failed:', error);
+      console.error('Contact form submission failed:', error);
+      setSubmitError(true);
     } finally {
       setIsSubmitting(false);
     }
@@ -250,12 +274,12 @@ export default function App() {
 
   return (
     <div ref={containerRef} className="relative min-h-screen bg-bg-void selection:bg-accent-cyan selection:text-bg-void overflow-x-hidden">
-      <CustomCursor />
       <Navbar />
+      <ChapterProgress />
       <NeuralBackground />
 
       <main className="relative z-10">
-        {/* --- SECTION 01: SIGNAL (Hero) --- */}
+        {/* --- CHAPTER 01: THE SPARK (Hero) --- */}
         <section id="hero" className="relative h-screen flex flex-col items-center justify-center px-6 text-center overflow-hidden">
           <div className="max-w-4xl">
             <motion.div
@@ -264,7 +288,7 @@ export default function App() {
               transition={{ duration: 1 }}
               className="font-mono text-accent-cyan text-xs md:text-sm tracking-[0.4em] mb-6 uppercase"
             >
-              <Typewriter text="// SOBAN ALI" delay={100} onComplete={() => setHeroComplete(true)} />
+              <Typewriter text="// Chapter 01 · The Spark" delay={100} onComplete={() => setHeroComplete(true)} />
             </motion.div>
 
             <AnimatePresence>
@@ -274,14 +298,14 @@ export default function App() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
                 >
-                  <h1 className="text-[clamp(4rem,10vw,9rem)] font-display font-black text-text-hi uppercase tracking-tighter leading-[0.85] mb-8">
+                  <h1 className="text-[clamp(2.75rem,8vw,6rem)] font-display font-extrabold text-text-hi uppercase tracking-tight leading-[0.95] mb-8">
                     SOBAN ALI
                   </h1>
                   <p className="font-body text-lg md:text-2xl text-text-lo max-w-2xl mx-auto mb-12 leading-relaxed">
-                    AI Engineer · ML Researcher · Full-Stack Builder
+                    AI Engineer in Progress · Final-Year CS @ FAST NUCES
                     <br />
                     <span className="text-sm opacity-60 mt-4 block font-mono">
-                      Building systems that think — from multi-agent negotiators to malware classifiers.
+                      From multi-agent systems to research replications — chasing why things work, not just that they work.
                     </span>
                   </p>
 
@@ -291,7 +315,7 @@ export default function App() {
                     whileTap={{ scale: 0.95 }}
                     className="inline-flex items-center gap-3 px-8 py-4 bg-transparent border border-accent-cyan text-accent-cyan font-mono text-xs uppercase tracking-widest rounded-full hover:bg-accent-cyan hover:text-bg-void transition-all duration-300"
                   >
-                    [ Explore Signal ]
+                    [ Begin the Story ]
                     <ArrowRight size={16} />
                   </motion.a>
                 </motion.div>
@@ -305,7 +329,7 @@ export default function App() {
             transition={{ delay: 3, duration: 1 }}
             className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
           >
-            <span className="font-mono text-[8px] uppercase tracking-widest opacity-40">Scroll to Decrypt</span>
+            <span className="font-mono text-[8px] uppercase tracking-widest opacity-40">Scroll to Continue</span>
             <motion.div
               animate={{ y: [0, 10, 0] }}
               transition={{ duration: 2, repeat: Infinity }}
@@ -314,8 +338,10 @@ export default function App() {
           </motion.div>
         </section>
 
-        {/* --- SECTION 02: ORIGIN (About) --- */}
-        <section id="about" className="relative min-h-screen py-32 px-6 flex items-center">
+        <ChapterTransition nextNumber="02" line="Every system starts with a why." />
+
+        {/* --- CHAPTER 02: THE ORIGIN (About) --- */}
+        <section id="about" className="relative min-h-screen py-20 sm:py-32 px-6 flex items-center">
           <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
             <div className="relative">
               {/* Confusion Matrix Watermark */}
@@ -325,30 +351,27 @@ export default function App() {
                 ))}
               </div>
               
-              <SectionHeader number="02" label="Origin" title="Built to Build" />
-              
+              <SectionHeader number="02" label="The Origin" title="Why I Build" />
+
               <div className="space-y-6 font-body text-lg text-text-lo leading-relaxed">
                 <p>
-                  CS student at <span className="text-text-hi font-medium">FAST NUCES</span> (Class of 2027), maintaining a <span className="text-accent-cyan">3.69 GPA</span> while shipping real systems. I don't wait for coursework — I build multi-agent LLM pipelines, replicate research papers, and deploy full-stack platforms on AWS.
+                  Final year CS student at <span className="text-text-hi font-medium">FAST NUCES</span>, graduating <span className="text-text-hi font-medium">June 2026</span>. I'm an AI engineer in progress exploring and building to develop both theoretical depth and hands-on intuition. From architecting multi-agent systems to implementing machine learning algorithms from scratch, I chase understanding at the level of <span className="text-accent-cyan">why things work, not just that they work</span>.
+                </p>
+                <p className="border-l-2 border-accent-cyan pl-6">
+                  My proudest project so far: replicating a malware detection research paper and pushing it past the original benchmarks. That kind of work — reading deeply, rebuilding carefully, then going further is exactly how I learn best.
                 </p>
                 <p>
-                  Schooled at Lahore Grammar School (3A* 1A at A-Levels, 5A* at O-Levels). The discipline stuck. Currently hunting an AI internship where I can apply LLM orchestration and inference optimization at scale.
+                  I'm drawn to AI because the field moves fast and the stakes are real. I'd rather be one of the people steering it than someone it leaves behind.
                 </p>
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-3 gap-8 mt-12">
-                <div>
-                  <div className="text-3xl font-display font-bold text-text-hi">3.69</div>
-                  <div className="font-mono text-[10px] uppercase tracking-widest text-accent-vio">Cumulative GPA</div>
-                </div>
-                <div>
-                  <div className="text-3xl font-display font-bold text-text-hi">5×</div>
-                  <div className="font-mono text-[10px] uppercase tracking-widest text-accent-vio">Dean's List</div>
-                </div>
-                <div>
-                  <div className="text-3xl font-display font-bold text-text-hi">2027</div>
-                  <div className="font-mono text-[10px] uppercase tracking-widest text-accent-vio">Graduation</div>
-                </div>
+                {milestones.map((milestone) => (
+                  <div key={milestone.label}>
+                    <div className="text-xl sm:text-2xl md:text-3xl font-display font-bold text-text-hi">{milestone.value}</div>
+                    <div className="font-mono text-[10px] uppercase tracking-widest text-accent-vio">{milestone.label}</div>
+                  </div>
+                ))}
               </div>
             </div>
 
@@ -384,7 +407,7 @@ export default function App() {
                   }}
                   className="absolute bottom-8 left-8"
                 >
-                  <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-cyan mb-2">Identity Verified</div>
+                  <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-cyan mb-2">// est. Lahore, Pakistan</div>
                   <div className="text-2xl font-display font-bold text-text-hi uppercase">Soban Ali</div>
                 </motion.div>
               </motion.div>
@@ -392,10 +415,12 @@ export default function App() {
           </div>
         </section>
 
-        {/* --- SECTION 03: ARSENAL (Skills) --- */}
-        <section id="skills" className="relative min-h-screen py-32 px-6 bg-bg-deep/50">
+        <ChapterTransition nextNumber="03" line="Understanding demands the right tools." />
+
+        {/* --- CHAPTER 03: THE TOOLKIT (Skills) --- */}
+        <section id="skills" className="relative min-h-screen py-20 sm:py-32 px-6 bg-bg-deep/50">
           <div className="max-w-7xl mx-auto">
-            <SectionHeader number="03" label="Arsenal" title="Tools That Ship" className="text-center" />
+            <SectionHeader number="03" label="The Toolkit" title="What I Build With" className="text-center" />
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-20">
               {skills.map((skillGroup, idx) => (
@@ -405,7 +430,7 @@ export default function App() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: idx * 0.1 }}
-                  className="bg-bg-card border border-rule p-8 rounded-xl hover:border-accent-cyan/30 transition-colors group"
+                  className="bg-bg-card border border-rule p-6 sm:p-8 rounded-xl hover:border-accent-cyan/30 transition-colors group"
                 >
                   <h3 className={`font-mono text-xs uppercase tracking-[0.2em] mb-8 ${skillColors[skillGroup.color].split(' ')[0]}`}>
                     [ {skillGroup.category} ]
@@ -436,10 +461,12 @@ export default function App() {
           </div>
         </section>
 
-        {/* --- SECTION 04: DEPLOYMENTS (Projects) --- */}
-        <section id="projects" className="relative min-h-screen py-32 px-6">
+        <ChapterTransition nextNumber="04" line="Tools mean nothing until something gets built." />
+
+        {/* --- CHAPTER 04: THE BUILDS (Projects) --- */}
+        <section id="projects" className="relative min-h-screen py-20 sm:py-32 px-6">
           <div className="max-w-7xl mx-auto">
-            <SectionHeader number="04" label="Deployments" title="Field Operations" />
+            <SectionHeader number="04" label="The Builds" title="Proof of Work" />
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-20">
               {projects.map((project) => (
@@ -456,47 +483,75 @@ export default function App() {
             </div>
 
             <div className="mt-20 text-center">
-              <p className="font-mono text-[10px] uppercase tracking-widest opacity-40 mb-8">End of Deployment Log</p>
+              <p className="font-mono text-[10px] uppercase tracking-widest opacity-40 mb-8">Each build taught something the last one couldn't.</p>
               <a href="https://github.com/sobanali256" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-accent-cyan hover:underline font-mono text-xs uppercase tracking-widest">
-                View Full Repository <Github size={14} />
+                More on GitHub <Github size={14} />
               </a>
             </div>
           </div>
         </section>
 
-        {/* --- SECTION 05: MILESTONES (Achievements) --- */}
-        <section id="achievements" className="relative min-h-screen py-32 px-6 bg-bg-deep/50">
-          <div className="max-w-7xl mx-auto">
-            <SectionHeader number="05" label="Milestones" title="Track Record" className="text-center" />
-            
+        <ChapterTransition nextNumber="05" line="Then the work left the sandbox." />
+
+        {/* --- CHAPTER 05: THE FIELD (Experience) --- */}
+        <section id="experience" className="relative min-h-screen py-20 sm:py-32 px-6 bg-bg-deep/50 flex items-center">
+          <div className="max-w-7xl mx-auto w-full">
+            <SectionHeader number="05" label="The Field" title="Theory, Meet Production" className="text-center" />
+
             <div className="relative mt-20 max-w-3xl mx-auto">
-              {/* Training Curve Timeline Line */}
-              <div className="absolute left-0 md:left-1/2 top-0 bottom-0 w-px bg-rule -translate-x-1/2 hidden md:block" />
-              <motion.div 
+              {/* Timeline rail */}
+              <div className="absolute left-2 top-2 bottom-2 w-px bg-rule" />
+              <motion.div
                 style={{ scaleY: scrollYProgress }}
-                className="absolute left-0 md:left-1/2 top-0 bottom-0 w-px bg-accent-cyan -translate-x-1/2 origin-top hidden md:block z-0"
+                className="absolute left-2 top-2 bottom-2 w-px bg-accent-cyan origin-top"
               />
-              
-              <div className="space-y-16">
-                {milestones.map((milestone, idx) => (
+
+              <div className="space-y-12">
+                {experiences.map((exp, idx) => (
                   <motion.div
                     key={idx}
-                    initial={{ opacity: 0, x: idx % 2 === 0 ? -50 : 50 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                    className={`relative flex flex-col md:flex-row items-center gap-8 ${idx % 2 === 0 ? 'md:flex-row-reverse' : ''}`}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-80px" }}
+                    transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                    className="relative pl-10 md:pl-14"
                   >
                     {/* Node */}
-                    <div className="absolute left-0 md:left-1/2 w-4 h-4 rounded-full bg-accent-cyan border-4 border-bg-void -translate-x-1/2 z-10 hidden md:block" />
-                    
-                    <div className={`w-full md:w-1/2 ${idx % 2 === 0 ? 'md:text-right' : 'md:text-left'}`}>
-                      <div className="font-mono text-xs text-accent-vio mb-2">{milestone.year}</div>
-                      <h3 className="text-2xl font-display font-bold text-text-hi mb-1 uppercase tracking-tight">{milestone.title}</h3>
-                      <div className="font-mono text-[10px] uppercase tracking-widest text-accent-cyan mb-4 opacity-70">{milestone.subtitle}</div>
-                      <p className="font-body text-sm text-text-lo leading-relaxed">{milestone.description}</p>
+                    <div className="absolute left-2 top-2 w-3.5 h-3.5 rounded-full bg-accent-cyan border-4 border-bg-deep -translate-x-1/2 z-10" />
+
+                    <div className="bg-bg-card border border-rule rounded-xl p-6 sm:p-8 hover:border-accent-cyan/30 transition-colors">
+                      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-6">
+                        <div>
+                          <h3 className="text-2xl font-display font-bold text-text-hi uppercase tracking-tight">{exp.role}</h3>
+                          <div className="font-mono text-sm text-accent-cyan mt-1">
+                            {exp.company} <span className="text-text-lo opacity-60">· {exp.type}</span>
+                          </div>
+                        </div>
+                        <div className="font-mono text-[10px] uppercase tracking-widest text-accent-vio whitespace-nowrap sm:pt-1">
+                          {exp.period}
+                        </div>
+                      </div>
+
+                      <ul className="space-y-3 mb-6">
+                        {exp.points.map((point, i) => (
+                          <li key={i} className="flex gap-3 font-body text-sm text-text-lo leading-relaxed">
+                            <span className="mt-2 w-1.5 h-1.5 rounded-full bg-accent-cyan shrink-0" />
+                            <span>{point}</span>
+                          </li>
+                        ))}
+                      </ul>
+
+                      <div className="flex flex-wrap gap-2">
+                        {exp.tech.map((t) => (
+                          <span
+                            key={t}
+                            className="px-3 py-1 border border-rule font-mono text-[9px] uppercase tracking-widest text-text-lo"
+                          >
+                            {t}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                    <div className="hidden md:block w-1/2" />
                   </motion.div>
                 ))}
               </div>
@@ -504,38 +559,40 @@ export default function App() {
           </div>
         </section>
 
-        {/* --- SECTION 06: TRANSMISSION (Contact) --- */}
-        <section id="contact" className="relative min-h-screen py-32 px-6 flex items-center">
+        <ChapterTransition nextNumber="06" line="The story is still being written." />
+
+        {/* --- CHAPTER 06: THE NEXT CHAPTER (Contact) --- */}
+        <section id="contact" className="relative min-h-screen py-20 sm:py-32 px-6 flex items-center">
           <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-20">
             <div>
-              <SectionHeader number="06" label="Transmission" title="Open Channel" />
+              <SectionHeader number="06" label="The Next Chapter" title="What Comes Next" />
               <p className="font-body text-lg text-text-lo leading-relaxed mb-12 max-w-md">
-                AI internship? Research collaboration? Interesting problem? Signal me. I read every message. I respond to the ones worth responding to.
+                Graduating June 2026 and looking for the right place to keep building. If you're working on something in AI worth doing well — a role, a research collaboration, a hard problem — I'd like to hear about it. I read every message.
               </p>
 
               <div className="space-y-8">
-                <a href="mailto:sobanali256@gmail.com" className="flex items-center gap-6 group">
-                  <div className="w-12 h-12 rounded-full border border-rule flex items-center justify-center group-hover:border-accent-cyan transition-colors">
+                <a href="mailto:sobanali256@gmail.com" className="flex items-center gap-4 sm:gap-6 group min-w-0">
+                  <div className="w-12 h-12 shrink-0 rounded-full border border-rule flex items-center justify-center group-hover:border-accent-cyan transition-colors">
                     <Mail size={20} className="text-text-lo group-hover:text-accent-cyan transition-colors" />
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <div className="font-mono text-[10px] uppercase tracking-widest opacity-40">Email</div>
-                    <div className="text-text-hi font-mono">sobanali256@gmail.com</div>
+                    <div className="text-text-hi font-mono break-all">sobanali256@gmail.com</div>
                   </div>
                 </a>
-                <a href="https://linkedin.com/in/sobanali256" target="_blank" rel="noopener noreferrer" className="flex items-center gap-6 group">
-                  <div className="w-12 h-12 rounded-full border border-rule flex items-center justify-center group-hover:border-accent-cyan transition-colors">
+                <a href="https://linkedin.com/in/sobanali256" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 sm:gap-6 group min-w-0">
+                  <div className="w-12 h-12 shrink-0 rounded-full border border-rule flex items-center justify-center group-hover:border-accent-cyan transition-colors">
                     <Linkedin size={20} className="text-text-lo group-hover:text-accent-cyan transition-colors" />
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <div className="font-mono text-[10px] uppercase tracking-widest opacity-40">LinkedIn</div>
-                    <div className="text-text-hi font-mono">linkedin.com/in/sobanali256</div>
+                    <div className="text-text-hi font-mono break-all">linkedin.com/in/sobanali256</div>
                   </div>
                 </a>
               </div>
             </div>
 
-            <div className="bg-bg-card border border-rule p-10 rounded-2xl relative overflow-hidden">
+            <div className="bg-bg-card border border-rule p-6 sm:p-10 rounded-2xl relative overflow-hidden">
               {/* Radar Sweep Background */}
               <div className="absolute inset-0 opacity-5 pointer-events-none">
                 <motion.div
@@ -668,15 +725,15 @@ export default function App() {
                           transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                           className="w-4 h-4 border-2 border-bg-void/30 border-t-bg-void rounded-full"
                         />
-                        Encrypting...
+                        Sending...
                       </>
                     ) : isSuccess ? (
                       <>
                         <CheckCircle2 size={18} />
-                        Signal Delivered
+                        Message Sent
                       </>
                     ) : (
-                      'Transmit Signal'
+                      'Send Message'
                     )}
                   </motion.button>
 
@@ -685,9 +742,21 @@ export default function App() {
                       <motion.p
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 10 }}
                         className="absolute -bottom-8 left-0 w-full text-center font-mono text-[10px] text-accent-emerald uppercase tracking-widest"
                       >
-                        Transmission successful. Channel remains open.
+                        Thanks — I'll get back to you soon.
+                      </motion.p>
+                    )}
+                    {submitError && (
+                      <motion.p
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 10 }}
+                        className="absolute -bottom-8 left-0 w-full flex items-center justify-center gap-2 font-mono text-[10px] text-accent-cor uppercase tracking-widest"
+                      >
+                        <AlertCircle size={10} />
+                        Something went wrong. Try again or email me directly.
                       </motion.p>
                     )}
                   </AnimatePresence>
@@ -701,7 +770,7 @@ export default function App() {
         <footer className="py-12 px-6 border-t border-rule bg-bg-void relative z-10">
           <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
             <div className="font-mono text-[10px] uppercase tracking-widest opacity-40">
-              © 2026 Soban Ali // Classified Intelligence Dossier
+              © 2026 Soban Ali — written chapter by chapter
             </div>
             <div className="flex items-center gap-8">
               <a href="https://github.com/sobanali256" target="_blank" rel="noopener noreferrer" className="font-mono text-[10px] uppercase tracking-widest hover:text-accent-cyan transition-colors">Github</a>

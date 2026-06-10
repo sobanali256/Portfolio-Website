@@ -27,21 +27,21 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-100px" }}
       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-      className="group relative bg-bg-card border border-rule p-10 flex flex-col gap-8 transition-all duration-500 hover:bg-accent-cyan/[0.02]"
+      className="group relative bg-bg-card border border-rule p-6 sm:p-10 flex flex-col gap-8 transition-all duration-500 hover:bg-accent-cyan/[0.02]"
     >
       <div className="flex flex-col gap-3">
-        <div className="flex items-center justify-between">
-          <h3 className="font-display font-black text-4xl text-text-hi uppercase tracking-tighter group-hover:text-accent-cyan transition-colors">
+        <div className="flex items-center justify-between gap-4">
+          <h3 className="font-display font-extrabold text-2xl sm:text-3xl text-text-hi uppercase tracking-tight min-w-0 group-hover:text-accent-cyan transition-colors">
             {title}
           </h3>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 shrink-0">
             {githubUrl && (
-              <a href={githubUrl} target="_blank" rel="noopener noreferrer" className="text-text-lo hover:text-accent-cyan transition-colors">
+              <a href={githubUrl} target="_blank" rel="noopener noreferrer" aria-label="View source on GitHub" className="w-10 h-10 rounded-full border border-rule flex items-center justify-center text-text-lo hover:text-accent-cyan hover:border-accent-cyan transition-colors">
                 <Github size={18} />
               </a>
             )}
             {liveUrl && (
-              <a href={liveUrl} target="_blank" rel="noopener noreferrer" className="text-text-lo hover:text-accent-cyan transition-colors">
+              <a href={liveUrl} target="_blank" rel="noopener noreferrer" aria-label="Open live site" className="w-10 h-10 rounded-full border border-rule flex items-center justify-center text-text-lo hover:text-accent-cyan hover:border-accent-cyan transition-colors">
                 <ExternalLink size={18} />
               </a>
             )}
@@ -60,7 +60,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
 
       {/* Micro-interaction area */}
       <div className="h-32 bg-bg-void/50 overflow-hidden flex items-center justify-center border border-rule/30 relative">
-        <div className="absolute top-2 left-2 font-mono text-[8px] uppercase tracking-widest opacity-20">Simulation_Active</div>
+        <div className="absolute top-2 left-2 font-mono text-[8px] uppercase tracking-widest opacity-20">field_notes</div>
         {microAnim}
       </div>
 

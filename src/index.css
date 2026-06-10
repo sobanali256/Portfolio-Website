@@ -1,11 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&family=Sora:wght@400;500;600;700;800&display=swap');
+
 @import "tailwindcss";
 
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Syne:wght@400..800&display=swap');
-
 @theme {
-  --font-display: "Syne", sans-serif;
-  --font-body: "DM Sans", sans-serif;
-  --font-mono: "Space Mono", monospace;
+  --font-display: "Sora", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
 
   --color-bg-void: #0A0A0F;
   --color-bg-deep: #0D1117;
@@ -32,7 +32,6 @@
 
   body {
     @apply bg-bg-void text-text-lo font-body selection:bg-accent-cyan selection:text-bg-void;
-    cursor: none;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -51,10 +50,6 @@
 
   .glass-nav {
     @apply bg-[rgba(10,10,15,0.85)] backdrop-blur-lg border-b border-rule;
-  }
-
-  .custom-cursor {
-    @apply fixed top-0 left-0 w-3 h-3 border border-accent-cyan rounded-full pointer-events-none z-100 mix-blend-difference transition-transform duration-75 ease-out;
   }
 
   .hide-scrollbar::-webkit-scrollbar {
