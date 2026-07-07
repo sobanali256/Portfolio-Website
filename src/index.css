@@ -23,7 +23,8 @@
 
 @layer base {
   html {
-    scroll-behavior: smooth;
+    /* Lenis owns scroll smoothing now; native smooth-scroll would fight its lerp. */
+    scroll-behavior: auto;
   }
 
   html, body {

@@ -36,12 +36,12 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           </h3>
           <div className="flex items-center gap-3 shrink-0">
             {githubUrl && (
-              <a href={githubUrl} target="_blank" rel="noopener noreferrer" aria-label="View source on GitHub" className="w-10 h-10 rounded-full border border-rule flex items-center justify-center text-text-lo hover:text-accent-cyan hover:border-accent-cyan transition-colors">
+              <a href={githubUrl} target="_blank" rel="noopener noreferrer" aria-label="View source on GitHub" className="w-10 h-10 rounded-full bg-bg-void/60 backdrop-blur-sm border border-rule flex items-center justify-center text-text-lo hover:text-accent-cyan hover:border-accent-cyan transition-colors">
                 <Github size={18} />
               </a>
             )}
             {liveUrl && (
-              <a href={liveUrl} target="_blank" rel="noopener noreferrer" aria-label="Open live site" className="w-10 h-10 rounded-full border border-rule flex items-center justify-center text-text-lo hover:text-accent-cyan hover:border-accent-cyan transition-colors">
+              <a href={liveUrl} target="_blank" rel="noopener noreferrer" aria-label="Open live site" className="w-10 h-10 rounded-full bg-bg-void/60 backdrop-blur-sm border border-rule flex items-center justify-center text-text-lo hover:text-accent-cyan hover:border-accent-cyan transition-colors">
                 <ExternalLink size={18} />
               </a>
             )}

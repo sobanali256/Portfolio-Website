@@ -1,3 +1,5 @@
+import type Lenis from 'lenis';
+
 export interface Chapter {
   id: string;
   number: string;
@@ -15,7 +17,7 @@ export const chapters: Chapter[] = [
   { id: 'contact', number: '06', name: 'Next Chapter' },
 ];
 
-export function scrollToChapter(id: string) {
+export function scrollToChapter(id: string, lenis?: Lenis | null) {
   const element = document.getElementById(id);
   if (element) {
     const offset = 56; // Navbar height
@@ -24,9 +26,13 @@ export function scrollToChapter(id: string) {
     const elementPosition = elementRect - bodyRect;
     const offsetPosition = elementPosition - offset;
 
-    window.scrollTo({
-      top: offsetPosition,
-      behavior: 'smooth'
-    });
+    if (lenis) {
+      lenis.scrollTo(offsetPosition);
+    } else {
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
   }
 }

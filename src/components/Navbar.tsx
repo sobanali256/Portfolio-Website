@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Menu, X } from 'lucide-react';
+import { useLenis } from 'lenis/react';
 import { chapters, scrollToChapter } from '../data/chapters';
 import useActiveSection from '../hooks/useActiveSection';
 
@@ -11,6 +12,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const activeSection = useActiveSection(chapterIds);
+  const lenis = useLenis();
 
   useEffect(() => {
     const checkMobile = () => {
@@ -32,7 +34,7 @@ export default function Navbar() {
 
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
     e.preventDefault();
-    scrollToChapter(id);
+    scrollToChapter(id, lenis);
     setIsOpen(false);
   };
 

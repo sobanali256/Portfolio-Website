@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence, useMotionValue, useSpring } from 'motion/react';
 import { Analytics } from '@vercel/analytics/react';
 import { Github, Linkedin, Mail, ArrowRight, Terminal, Shield, FileText, AlertCircle, CheckCircle2 } from 'lucide-react';
@@ -8,7 +8,13 @@ import SectionHeader from './components/SectionHeader';
 import ProjectCard from './components/ProjectCard';
 import ChapterTransition from './components/ChapterTransition';
 import ChapterProgress from './components/ChapterProgress';
+import { useLenis } from 'lenis/react';
+import { useScrollSpeed } from './components/backgrounds/useScrollSpeed';
+import type { HyperspeedHandle } from './components/backgrounds/Hyperspeed';
+import { scrollToChapter } from './data/chapters';
 import profilePic from './assets/pic.png';
+
+const Hyperspeed = lazy(() => import('./components/backgrounds/Hyperspeed'));
 
 // --- Data ---
 
@@ -178,7 +184,7 @@ const experiences = [
     company: "FAST NUCES",
     type: "Education",
     points: [
-      "Cumulative GPA 3.69.",
+      "Cumulative GPA 3.70.",
       "Key coursework: Applied Machine Learning, Artificial Intelligence, Deep Learning, Cloud Computing, Database Systems, Software Engineering, Design & Analysis of Algorithms, Software Design and Architecture.",
     ],
     tech: ["ML", "AI", "Cloud", "Databases", "Algorithms", "Software Engineering"],
@@ -186,7 +192,7 @@ const experiences = [
 ];
 
 const milestones = [
-  { value: "3.69", label: "Cumulative GPA" },
+  { value: "3.70", label: "Cumulative GPA" },
   { value: "117 / 1980", label: "Reply Code Challenge · Apr 2026" },
   { value: "June 2027", label: "Graduation" },
 ];
@@ -197,6 +203,9 @@ export default function App() {
   const [heroComplete, setHeroComplete] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: containerRef });
+  const hyperspeedRef = useRef<HyperspeedHandle>(null);
+  useScrollSpeed(hyperspeedRef);
+  const lenis = useLenis();
 
   // Form State
   const [formState, setFormState] = useState({
@@ -296,6 +305,13 @@ export default function App() {
 
   return (
     <div ref={containerRef} className="relative min-h-screen bg-bg-void selection:bg-accent-cyan selection:text-bg-void overflow-x-hidden">
+      <Suspense fallback={null}>
+        <Hyperspeed ref={hyperspeedRef} />
+      </Suspense>
+      <div
+        aria-hidden="true"
+        className="fixed inset-0 z-[1] pointer-events-none bg-gradient-to-b from-bg-void/85 via-bg-void/65 to-bg-void/85 backdrop-blur-[2px]"
+      />
       <Navbar />
       <ChapterProgress />
 
@@ -325,16 +341,20 @@ export default function App() {
                   <p className="font-body text-lg md:text-2xl text-text-lo max-w-2xl mx-auto mb-12 leading-relaxed">
                     AI Engineer in Progress · Final-Year CS @ FAST NUCES
                     <br />
-                    <span className="text-sm opacity-60 mt-4 block font-body italic">
+                    <span className="text-sm opacity-80 mt-4 block font-body italic">
                       From multi-agent systems to research replications — chasing why things work, not just that they work.
                     </span>
                   </p>
 
                   <motion.a
                     href="#about"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollToChapter('about', lenis);
+                    }}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="inline-flex items-center gap-3 px-8 py-4 bg-transparent border border-accent-cyan text-accent-cyan font-mono text-xs uppercase tracking-widest rounded-sm hover:bg-accent-cyan hover:text-bg-void transition-all duration-300"
+                    className="inline-flex items-center gap-3 px-8 py-4 bg-bg-void/60 backdrop-blur-sm border border-accent-cyan text-accent-cyan font-mono text-xs uppercase tracking-widest rounded-sm hover:bg-accent-cyan hover:text-bg-void transition-all duration-300"
                   >
                     Begin the Story
                     <ArrowRight size={16} />
@@ -350,7 +370,7 @@ export default function App() {
             transition={{ delay: 3, duration: 1 }}
             className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
           >
-            <span className="font-body text-[8px] uppercase tracking-widest opacity-40">Scroll to Continue</span>
+            <span className="font-body text-[8px] uppercase tracking-widest opacity-70">Scroll to Continue</span>
             <motion.div
               animate={{ y: [0, 10, 0] }}
               transition={{ duration: 2, repeat: Infinity }}
@@ -390,7 +410,7 @@ export default function App() {
                 {milestones.map((milestone) => (
                   <div key={milestone.label}>
                     <div className="text-xl sm:text-2xl md:text-3xl font-display font-bold text-text-hi">{milestone.value}</div>
-                    <div className="font-body text-[10px] uppercase tracking-widest text-accent-vio opacity-80">{milestone.label}</div>
+                    <div className="font-body text-[10px] uppercase tracking-widest text-accent-vio">{milestone.label}</div>
                   </div>
                 ))}
               </div>
@@ -487,7 +507,7 @@ export default function App() {
             </div>
 
             <div className="mt-20 text-center">
-              <p className="font-body text-[10px] uppercase tracking-widest opacity-40 mb-8 italic">Each build taught something the last one couldn't.</p>
+              <p className="font-body text-[10px] uppercase tracking-widest opacity-70 mb-8 italic">Each build taught something the last one couldn't.</p>
               <a href="https://github.com/sobanali256" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-accent-cyan hover:underline font-body text-xs uppercase tracking-widest">
                 More on GitHub <Github size={14} />
               </a>
@@ -576,7 +596,7 @@ export default function App() {
 
               <div className="space-y-8">
                 <a href="mailto:sobanali256@gmail.com" className="flex items-center gap-4 sm:gap-6 group min-w-0">
-                  <div className="w-12 h-12 shrink-0 rounded-sm border border-rule flex items-center justify-center group-hover:border-accent-cyan transition-colors">
+                  <div className="w-12 h-12 shrink-0 rounded-sm bg-bg-void/60 backdrop-blur-sm border border-rule flex items-center justify-center group-hover:border-accent-cyan transition-colors">
                     <Mail size={20} className="text-text-lo group-hover:text-accent-cyan transition-colors" />
                   </div>
                   <div className="min-w-0">
@@ -585,7 +605,7 @@ export default function App() {
                   </div>
                 </a>
                 <a href="https://linkedin.com/in/sobanali256" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 sm:gap-6 group min-w-0">
-                  <div className="w-12 h-12 shrink-0 rounded-sm border border-rule flex items-center justify-center group-hover:border-accent-cyan transition-colors">
+                  <div className="w-12 h-12 shrink-0 rounded-sm bg-bg-void/60 backdrop-blur-sm border border-rule flex items-center justify-center group-hover:border-accent-cyan transition-colors">
                     <Linkedin size={20} className="text-text-lo group-hover:text-accent-cyan transition-colors" />
                   </div>
                   <div className="min-w-0">

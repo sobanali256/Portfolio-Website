@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion, useScroll, useSpring } from 'motion/react';
+import { useLenis } from 'lenis/react';
 import { chapters, scrollToChapter } from '../data/chapters';
 import useActiveSection from '../hooks/useActiveSection';
 
@@ -9,10 +10,11 @@ export default function ChapterProgress() {
   const activeSection = useActiveSection(chapterIds);
   const { scrollYProgress } = useScroll();
   const scaleY = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
+  const lenis = useLenis();
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
     e.preventDefault();
-    scrollToChapter(id);
+    scrollToChapter(id, lenis);
   };
 
   return (
