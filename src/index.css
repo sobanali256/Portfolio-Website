@@ -1,64 +1,132 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&family=Sora:wght@400;500;600;700;800&display=swap');
-
 @import "tailwindcss";
 
+/*
+ * Palette: warm paper, near-black ink, one vermilion accent.
+ * Raw values live on :root / [data-theme="dark"]; @theme inline maps them to
+ * utilities (bg-paper, text-ink, border-rule, text-accent, …) so every utility
+ * follows the active theme without a dark: variant.
+ */
+:root {
+  --paper: oklch(97.2% 0.009 80);
+  --paper-2: oklch(94.6% 0.012 78);
+  --ink: oklch(21% 0.012 60);
+  --ink-2: oklch(38% 0.014 60);
+  --muted: oklch(50% 0.014 62);
+  --rule: oklch(87% 0.013 75);
+  --rule-strong: oklch(76% 0.016 70);
+  --accent: oklch(53% 0.175 36);
+  --accent-ink: oklch(98% 0.01 80);
+  --ok: oklch(52% 0.11 150);
+  --err: oklch(52% 0.18 28);
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --paper: oklch(18.5% 0.01 62);
+  --paper-2: oklch(22% 0.011 62);
+  --ink: oklch(94% 0.01 80);
+  --ink-2: oklch(82% 0.012 76);
+  --muted: oklch(68% 0.014 70);
+  --rule: oklch(30% 0.012 65);
+  --rule-strong: oklch(40% 0.014 65);
+  --accent: oklch(70% 0.155 42);
+  --accent-ink: oklch(18.5% 0.01 62);
+  --ok: oklch(72% 0.12 150);
+  --err: oklch(70% 0.15 30);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-muted: var(--muted);
+  --color-rule: var(--rule);
+  --color-rule-strong: var(--rule-strong);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-ok: var(--ok);
+  --color-err: var(--err);
+}
+
 @theme {
-  --font-display: "Sora", sans-serif;
-  --font-body: "Inter", sans-serif;
-  --font-mono: "JetBrains Mono", monospace;
+  --font-display: "Instrument Serif", "Iowan Old Style", Georgia, serif;
+  --font-sans: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
 
-  --color-bg-void: #0C0B08;
-  --color-bg-deep: #141210;
-  --color-bg-card: #1C1A14;
-  --color-text-hi: #F0EADc;
-  --color-text-lo: #9A8A78;
-  --color-accent-cyan: #E8A040;
-  --color-accent-vio: #C87040;
-  --color-accent-cor: #8B5E3C;
-  --color-accent-emerald: #6B8C5E;
-  --color-rule: #2C2820;
-
-  --animate-pulse-slow: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 @layer base {
   html {
-    /* Lenis owns scroll smoothing now; native smooth-scroll would fight its lerp. */
+    /* Lenis owns scroll smoothing; native smooth-scroll would fight its lerp. */
     scroll-behavior: auto;
-  }
-
-  html, body {
-    @apply overflow-x-hidden;
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
-    @apply bg-bg-void text-text-lo font-body selection:bg-accent-cyan selection:text-bg-void;
-    /* body::before grain overlay handled below */
+    @apply bg-paper text-ink-2 font-sans antialiased;
+    font-feature-settings: "ss01", "cv11";
+    text-rendering: optimizeLegibility;
+    transition: background-color 300ms var(--ease-out-quart), color 300ms var(--ease-out-quart);
   }
 
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-display text-text-hi tracking-tight;
+  ::selection {
+    background: var(--accent);
+    color: var(--accent-ink);
   }
 
-  .font-mono {
-    @apply font-mono;
+  h1, h2, h3, h4 {
+    @apply text-ink;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 2px;
   }
 }
 
 @layer utilities {
-  .glass-nav {
-    @apply bg-[rgba(10,10,15,0.85)] backdrop-blur-lg border-b border-rule;
+  /* Small uppercase metadata label — the paper's "running head" voice. */
+  .label {
+    @apply font-mono text-[11px] uppercase tracking-[0.14em] text-muted;
   }
 
-  .hide-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-  .hide-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+  .tabular {
+    font-variant-numeric: tabular-nums;
   }
 
-  .perspective-1000 {
-    perspective: 1000px;
+  /* Underline that draws in from the left on hover. */
+  .link-draw {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size 400ms var(--ease-out-expo);
+  }
+  .link-draw:hover,
+  .link-draw:focus-visible {
+    background-size: 100% 1px;
+  }
+
+  /* Faint baseline grid behind the hero — ruled notebook paper. */
+  .ruled {
+    background-image: linear-gradient(to bottom, color-mix(in oklch, var(--rule) 55%, transparent) 1px, transparent 1px);
+    background-size: 100% 32px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
   }
 }

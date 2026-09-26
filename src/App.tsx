@@ -1,799 +1,410 @@
-import React, { useState, useEffect, useRef, lazy, Suspense } from 'react';
-import { motion, useScroll, useTransform, AnimatePresence, useMotionValue, useSpring } from 'motion/react';
+import React, { useState } from 'react';
+import { MotionConfig, motion } from 'motion/react';
 import { Analytics } from '@vercel/analytics/react';
-import { Github, Linkedin, Mail, ArrowRight, Terminal, Shield, FileText, AlertCircle, CheckCircle2 } from 'lucide-react';
-import Navbar from './components/Navbar';
-import Typewriter from './components/Typewriter';
-import SectionHeader from './components/SectionHeader';
-import ProjectCard from './components/ProjectCard';
-import ChapterTransition from './components/ChapterTransition';
-import ChapterProgress from './components/ChapterProgress';
+import { ArrowDown, ArrowUpRight, ArrowUp, Check, Copy } from 'lucide-react';
 import { useLenis } from 'lenis/react';
-import { useScrollSpeed } from './components/backgrounds/useScrollSpeed';
-import type { HyperspeedHandle } from './components/backgrounds/Hyperspeed';
+import Navbar from './components/Navbar';
+import SectionHeader from './components/SectionHeader';
+import ProjectIndex from './components/ProjectIndex';
+import ContactForm from './components/ContactForm';
+import AttentionFigure from './components/AttentionFigure';
+import LocalTime from './components/LocalTime';
+import Reveal from './components/Reveal';
 import { scrollToChapter } from './data/chapters';
-import profilePic from './assets/pic.png';
+import { experiences, profile, projects, stack } from './data/content';
+import portrait from './assets/portrait.webp';
 
-const Hyperspeed = lazy(() => import('./components/backgrounds/Hyperspeed'));
+const EASE = [0.16, 1, 0.3, 1] as const;
+const CONTAINER = 'mx-auto w-full max-w-[1320px] px-5 sm:px-8';
 
-// --- Data ---
+// Emphasis inside serif headings: italic, in the accent colour.
+const Em = ({ children }: { children: React.ReactNode }) => <em className="italic text-accent">{children}</em>;
 
-const projects = [
-  {
-    title: "WARROOM",
-    tagline: "Multi-agent Negotiation",
-    description: "Three AI agents argue over contracts so humans don't have to. Multi-agent negotiation with zero-touch role detection — at 75% lower cost than a GPT-4o equivalent.",
-    techStack: ["CrewAI", "OpenAI API", "Python", "React"],
-    githubUrl: "https://github.com/sobanali256/War-Room",
-    microAnim: (
-      <div className="flex gap-4 items-center">
-        <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 2, repeat: Infinity }} className="w-8 h-8 rounded-full bg-accent-cyan/20 border border-accent-cyan flex items-center justify-center">
-          <Terminal size={14} className="text-accent-cyan" />
-        </motion.div>
-        <div className="flex flex-col gap-1">
-          <div className="w-16 h-1 bg-accent-cyan/30 rounded" />
-          <div className="w-12 h-1 bg-accent-vio/30 rounded" />
-          <div className="w-14 h-1 bg-accent-cor/30 rounded" />
-        </div>
-      </div>
-    )
-  },
-  {
-    title: "ML FROM SCRATCH",
-    tagline: "Fundamental Algorithms",
-    description: "Core machine learning rebuilt from first principles: Naive Bayes, Logistic Regression, and Neural Networks in raw NumPy. No high-level libraries — the goal was understanding the math, not calling it.",
-    techStack: ["NumPy", "Python", "Mathematics"],
-    githubUrl: "https://github.com/sobanali256/Machine-Learning",
-    microAnim: (
-      <div className="flex items-center justify-center w-full h-full">
-        <motion.div
-          animate={{ 
-            rotate: [0, 360],
-            borderRadius: ["20%", "50%", "20%"]
-          }}
-          transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-          className="w-12 h-12 border-2 border-accent-cyan/50 flex items-center justify-center"
-        >
-          <div className="w-2 h-2 bg-accent-vio rounded-full" />
-        </motion.div>
-      </div>
-    )
-  },
-  {
-    title: "MALWARE DETECTION",
-    tagline: "Research Replication",
-    description: "Replicated a 2025 research paper, then pushed past it: 99.10% accuracy on the Malimg dataset with VGG-16 fine-tuned on a grayscale-to-JET image pipeline.",
-    techStack: ["TensorFlow", "Keras", "OpenCV", "Python"],
-    githubUrl: "https://github.com/sobanali256/malware-detection-research-replication",
-    microAnim: (
-      <div className="relative w-24 h-12 bg-bg-void rounded border border-rule/50 overflow-hidden">
-        <motion.div 
-          animate={{ x: [-100, 100] }} 
-          transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-          className="absolute inset-0 bg-linear-to-r from-transparent via-accent-cor/20 to-transparent"
-        />
-        <Shield size={24} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-accent-cor opacity-40" />
-      </div>
-    )
-  },
-  {
-    title: "TWEET SENTIMENT",
-    tagline: "Large-scale NLP",
-    description: "Sentiment at scale: 1.6M tweets through a custom preprocessor that cut vocabulary by 40%, with Naive Bayes and Logistic Regression built from first principles reaching 0.83 AUC.",
-    techStack: ["Scikit-learn", "NLTK", "Pandas", "Python"],
-    githubUrl: "https://github.com/sobanali256/Tweet-Sentiment-Analysis",
-    microAnim: (
-      <div className="flex items-end gap-1 h-12">
-        {[40, 70, 50, 90, 60, 80, 45].map((h, i) => (
-          <motion.div
-            key={i}
-            initial={{ height: 0 }}
-            whileInView={{ height: `${h}%` }}
-            transition={{ duration: 1, delay: i * 0.1 }}
-            className="w-2 bg-accent-vio rounded-t"
-          />
-        ))}
-      </div>
-    )
-  },
-  {
-    title: "RESUME ANALYZER",
-    tagline: "Semantic Audit",
-    description: "An OpenAI-powered semantic audit for resumes — PDF extraction, vagueness detection, and cover letter generation, with a full report in under 10 seconds via Streamlit.",
-    techStack: ["OpenAI", "PyPDF2", "Streamlit", "Python"],
-    githubUrl: "https://github.com/sobanali256/AI_Resume_Analyzer",
-    microAnim: (
-      <div className="relative w-16 h-20 border border-rule rounded p-2 overflow-hidden">
-        <FileText size={24} className="text-text-lo opacity-20" />
-        <motion.div
-          animate={{ y: [-10, 80] }}
-          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-          className="absolute top-0 left-0 w-full h-0.5 bg-accent-cyan shadow-[0_0_10px_#E8A040]"
-        />
-      </div>
-    )
-  },
-  {
-    title: "RASTH",
-    tagline: "Full-stack Medical",
-    description: "A full-stack medical records platform: role-based portals, real-time chat over a RESTful API, deployed on AWS EC2 + RDS.",
-    techStack: ["Node.js", "Express", "PostgreSQL", "AWS"],
-    githubUrl: "https://github.com/sobanali256/RASTH-Db-project",
-    microAnim: (
-      <div className="flex items-center justify-center w-full h-full">
-        <motion.div
-          animate={{ 
-            pathLength: [0, 1],
-            opacity: [0.3, 1, 0.3]
-          }}
-          transition={{ duration: 2, repeat: Infinity }}
-          className="w-20 h-10"
-        >
-          <svg viewBox="0 0 100 40" className="w-full h-full stroke-accent-cyan fill-none stroke-2">
-            <path d="M0 20 L20 20 L25 10 L35 30 L40 20 L60 20 L65 5 L75 35 L80 20 L100 20" />
-          </svg>
-        </motion.div>
-      </div>
-    )
-  }
-];
-
-const skills = [
-  { category: "GENERATIVE AI", items: ["CrewAI", "LangChain", "OpenAI API", "Hugging Face"], color: "accent-cyan" },
-  { category: "ML", items: ["Scikit-learn", "Pandas", "NumPy", "Matplotlib"], color: "accent-vio" },
-  { category: "DEEP LEARNING", items: ["TensorFlow", "Keras", "PyTorch", "Computer Vision"], color: "accent-cor" },
-  { category: "BACKEND", items: ["Node.js", "Express", "PostgreSQL", "AWS", "Python"], color: "accent-emerald" },
-];
-
-const skillColors: Record<string, string> = {
-  "accent-cyan": "text-accent-cyan bg-accent-cyan",
-  "accent-vio": "text-accent-vio bg-accent-vio",
-  "accent-cor": "text-accent-cor bg-accent-cor",
-  "accent-emerald": "text-accent-emerald bg-accent-emerald",
-};
-
-const experiences = [
-  {
-    period: "Apr 2026 — Present",
-    role: "AI Intern",
-    company: "Ledelsea",
-    type: "Internship",
-    points: [
-      "Sole developer on a RAG-based solution that automates RFP proposal generation, reducing the manual effort required to produce a first draft.",
-      "Designed and built the full pipeline end-to-end, working from an initial Docker skeleton.",
-      "Implemented fixed-size chunking with all-MiniLM embeddings stored in ChromaDB.",
-      "Built hybrid search combining semantic retrieval with BM25 lexical search, with a reranker surfacing the top 10 most relevant chunks.",
-      "Integrated Claude for final proposal generation.",
-    ],
-    tech: ["Python", "ChromaDB", "all-MiniLM", "BM25", "Claude API", "Docker"],
-  },
-  {
-    period: "Apr 2026",
-    role: "117 / 1980",
-    company: "Reply Code Challenge",
-    type: "Competitive Programming",
-    points: [
-      "Ranked 117th out of 1,980 teams worldwide. Theme: multi-agent system for fraud detection.",
-      "Built a LangChain-based agent pipeline to detect fraudulent patterns, with LangFuse for cost and usage tracking across agent runs.",
-    ],
-    tech: ["LangChain", "LangFuse", "Python", "Multi-Agent"],
-  },
-  {
-    period: "2023 — Jun 2027",
-    role: "B.S. Computer Science",
-    company: "FAST NUCES",
-    type: "Education",
-    points: [
-      "Cumulative GPA 3.70.",
-      "Key coursework: Applied Machine Learning, Artificial Intelligence, Deep Learning, Cloud Computing, Database Systems, Software Engineering, Design & Analysis of Algorithms, Software Design and Architecture.",
-    ],
-    tech: ["ML", "AI", "Cloud", "Databases", "Algorithms", "Software Engineering"],
-  },
-];
-
-const milestones = [
-  { value: "3.70", label: "Cumulative GPA" },
-  { value: "117 / 1980", label: "Reply Code Challenge · Apr 2026" },
-  { value: "June 2027", label: "Graduation" },
-];
-
-// --- Components ---
+function CopyEmail({ className = '' }: { className?: string }) {
+  const [copied, setCopied] = useState(false);
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(profile.email);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1800);
+    } catch {
+      window.location.href = `mailto:${profile.email}`;
+    }
+  };
+  return (
+    <button
+      type="button"
+      onClick={copy}
+      aria-label={copied ? 'Email address copied' : 'Copy email address'}
+      className={`grid size-10 shrink-0 cursor-pointer place-items-center rounded-full border border-rule-strong text-ink transition-colors duration-200 hover:border-ink hover:bg-paper-2 ${className}`}
+    >
+      {copied ? <Check size={16} className="text-ok" /> : <Copy size={15} strokeWidth={1.7} />}
+      <span role="status" className="sr-only">{copied ? 'Copied' : ''}</span>
+    </button>
+  );
+}
 
 export default function App() {
-  const [heroComplete, setHeroComplete] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: containerRef });
-  const hyperspeedRef = useRef<HyperspeedHandle>(null);
-  useScrollSpeed(hyperspeedRef);
   const lenis = useLenis();
-
-  // Form State
-  const [formState, setFormState] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: ''
-  });
-  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
-  const [submitError, setSubmitError] = useState(false);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormState(prev => ({ ...prev, [name]: value }));
-    // Clear a prior submission failure once the user resumes editing
-    if (submitError) setSubmitError(false);
-    // Clear error when user starts typing
-    if (formErrors[name]) {
-      setFormErrors(prev => {
-        const newErrors = { ...prev };
-        delete newErrors[name];
-        return newErrors;
-      });
-    }
-  };
-
-  const validateForm = () => {
-    const errors: Record<string, string> = {};
-    if (!formState.name.trim()) errors.name = 'Please tell me your name.';
-    if (!formState.email.trim()) {
-      errors.email = 'I need a way to reply to you.';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formState.email)) {
-      errors.email = "That email doesn't look quite right.";
-    }
-    if (!formState.subject.trim()) errors.subject = "What's this about?";
-    if (!formState.message.trim()) errors.message = 'The message is empty.';
-    
-    setFormErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const go = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
     e.preventDefault();
-    if (!validateForm()) return;
-
-    setIsSubmitting(true);
-    setSubmitError(false);
-    try {
-      const response = await fetch('https://formspree.io/f/xeepkerq', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify(formState)
-      });
-
-      if (!response.ok) {
-        throw new Error(`Request failed with status ${response.status}`);
-      }
-
-      setIsSuccess(true);
-      setFormState({ name: '', email: '', subject: '', message: '' });
-    } catch (error) {
-      console.error('Contact form submission failed:', error);
-      setSubmitError(true);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  // 3D Tilt Logic for Profile Image
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-
-  const mouseXSpring = useSpring(x);
-  const mouseYSpring = useSpring(y);
-
-  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["15deg", "-15deg"]);
-  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-15deg", "15deg"]);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const width = rect.width;
-    const height = rect.height;
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
-    const xPct = mouseX / width - 0.5;
-    const yPct = mouseY / height - 0.5;
-    x.set(xPct);
-    y.set(yPct);
-  };
-
-  const handleMouseLeave = () => {
-    x.set(0);
-    y.set(0);
+    scrollToChapter(id, lenis);
   };
 
   return (
-    <div ref={containerRef} className="relative min-h-screen bg-bg-void selection:bg-accent-cyan selection:text-bg-void overflow-x-hidden">
-      <Suspense fallback={null}>
-        <Hyperspeed ref={hyperspeedRef} />
-      </Suspense>
-      <div
-        aria-hidden="true"
-        className="fixed inset-0 z-[1] pointer-events-none bg-gradient-to-b from-bg-void/85 via-bg-void/65 to-bg-void/85 backdrop-blur-[2px]"
-      />
+    <MotionConfig reducedMotion="user">
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-full focus:bg-ink focus:px-4 focus:py-2 focus:text-paper"
+      >
+        Skip to content
+      </a>
       <Navbar />
-      <ChapterProgress />
 
-      <main className="relative z-10">
-        {/* --- CHAPTER 01: THE SPARK (Hero) --- */}
-        <section id="hero" className="relative h-screen flex flex-col items-center justify-center px-6 text-center overflow-hidden">
-          <div className="max-w-4xl">
+      <main id="main">
+        {/* ——— Hero ——— */}
+        <section id="top" className="relative overflow-hidden pb-14 pt-28 md:pb-20 md:pt-36">
+          <div aria-hidden="true" className="ruled pointer-events-none absolute inset-0 [mask-image:linear-gradient(to_bottom,black,transparent_85%)] opacity-60" />
+          <div className={`${CONTAINER} relative`}>
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 1 }}
-              className="font-mono text-accent-cyan text-xs md:text-sm tracking-[0.4em] mb-6 uppercase"
+              transition={{ duration: 0.8, delay: 0.1 }}
+              className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3"
             >
-              <Typewriter text="// Chapter 01 · The Spark" delay={100} onComplete={() => setHeroComplete(true)} />
+              <p className="label">
+                {profile.role} <span className="mx-1.5 text-rule-strong">/</span> {profile.location}{' '}
+                <span className="mx-1.5 text-rule-strong">/</span> <LocalTime timeZone={profile.timeZone} /> PKT
+              </p>
+              <p className="inline-flex items-center gap-2.5 rounded-full border border-rule-strong bg-paper px-3.5 py-1.5 text-[13px] text-ink">
+                <span className="relative flex size-2">
+                  <span className="absolute inset-0 animate-ping rounded-full bg-accent opacity-50" />
+                  <span className="relative size-2 rounded-full bg-accent" />
+                </span>
+                {profile.availability}
+              </p>
             </motion.div>
 
-            <AnimatePresence>
-              {heroComplete && (
-                <motion.div
-                  initial={{ opacity: 0, y: 40 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-                >
-                  <h1 className="text-[clamp(2.75rem,8vw,6rem)] font-display font-extrabold text-text-hi uppercase tracking-tight leading-[0.95] mb-8">
-                    SOBAN ALI
-                  </h1>
-                  <p className="font-body text-lg md:text-2xl text-text-lo max-w-2xl mx-auto mb-12 leading-relaxed">
-                    AI Engineer in Progress · Final-Year CS @ FAST NUCES
-                    <br />
-                    <span className="text-sm opacity-80 mt-4 block font-body italic">
-                      From multi-agent systems to research replications — chasing why things work, not just that they work.
+            <div className="mt-12 grid gap-16 md:mt-16 lg:grid-cols-12 lg:gap-10">
+              <div className="lg:col-span-7">
+                <h1 className="font-display text-[clamp(4.5rem,14vw,11.5rem)] leading-[0.86] tracking-[-0.025em] text-ink">
+                  {['Soban', 'Ali'].map((word, i) => (
+                    <span key={word} className="block overflow-hidden pb-[0.06em]">
+                      <motion.span
+                        className={`block ${i === 1 ? 'italic pl-[0.55em]' : ''}`}
+                        initial={{ y: '105%' }}
+                        animate={{ y: 0 }}
+                        transition={{ duration: 1.1, delay: 0.15 + i * 0.12, ease: EASE }}
+                      >
+                        {word}
+                      </motion.span>
                     </span>
-                  </p>
+                  ))}
+                </h1>
 
-                  <motion.a
-                    href="#about"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      scrollToChapter('about', lenis);
-                    }}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="inline-flex items-center gap-3 px-8 py-4 bg-bg-void/60 backdrop-blur-sm border border-accent-cyan text-accent-cyan font-mono text-xs uppercase tracking-widest rounded-sm hover:bg-accent-cyan hover:text-bg-void transition-all duration-300"
-                  >
-                    Begin the Story
-                    <ArrowRight size={16} />
-                  </motion.a>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
+                <motion.p
+                  initial={{ opacity: 0, y: 14 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.9, delay: 0.55, ease: EASE }}
+                  className="mt-10 max-w-[36ch] text-[clamp(1.2rem,1.75vw,1.45rem)] leading-[1.5] text-ink-2"
+                >
+                  I build AI systems — multi-agent pipelines, retrieval, vision models — and rebuild the research
+                  behind them, chasing{' '}
+                  <span className="font-display text-[1.14em] italic text-ink">why things work, not just that they work.</span>
+                </motion.p>
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 3, duration: 1 }}
-            className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-          >
-            <span className="font-body text-[8px] uppercase tracking-widest opacity-70">Scroll to Continue</span>
-            <motion.div
-              animate={{ y: [0, 10, 0] }}
-              transition={{ duration: 2, repeat: Infinity }}
-              className="w-px h-12 bg-linear-to-b from-accent-cyan to-transparent"
-            />
-          </motion.div>
-        </section>
-
-        <ChapterTransition nextNumber="02" line="Every system starts with a why." />
-
-        {/* --- CHAPTER 02: THE ORIGIN (About) --- */}
-        <section id="about" className="relative min-h-screen py-20 sm:py-32 px-6 flex items-center">
-          <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-            <div className="relative">
-              {/* Confusion Matrix Watermark */}
-              <div className="absolute -top-20 -left-20 w-64 h-64 opacity-5 pointer-events-none grid grid-cols-8 grid-rows-8 gap-1">
-                {Array.from({ length: 64 }).map((_, i) => (
-                  <div key={i} className={`bg-accent-cyan ${i % 9 === 0 ? 'opacity-100' : 'opacity-40'}`} />
-                ))}
-              </div>
-              
-              <SectionHeader number="02" label="The Origin" title="Why I Build" />
-
-              <div className="space-y-6 font-body text-lg text-text-lo leading-relaxed">
-                <p>
-                  Final year CS student at <span className="text-text-hi font-medium">FAST NUCES</span>, graduating <span className="text-text-hi font-medium">June 2027</span>. I'm an AI engineer in progress exploring and building to develop both theoretical depth and hands-on intuition. From architecting multi-agent systems to implementing machine learning algorithms from scratch, I chase understanding at the level of <span className="text-accent-cyan">why things work, not just that they work</span>.
-                </p>
-                <p className="border-l-2 border-accent-cyan pl-6">
-                  My proudest project so far: replicating a malware detection research paper and pushing it past the original benchmarks. That kind of work — reading deeply, rebuilding carefully, then going further is exactly how I learn best.
-                </p>
-                <p>
-                  I'm drawn to AI because the field moves fast and the stakes are real. I'd rather be one of the people steering it than someone it leaves behind.
-                </p>
-              </div>
-
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-8 mt-12">
-                {milestones.map((milestone) => (
-                  <div key={milestone.label}>
-                    <div className="text-xl sm:text-2xl md:text-3xl font-display font-bold text-text-hi">{milestone.value}</div>
-                    <div className="font-body text-[10px] uppercase tracking-widest text-accent-vio">{milestone.label}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="relative perspective-1000">
-              <motion.div
-                style={{
-                  rotateX,
-                  rotateY,
-                  transformStyle: "preserve-3d",
-                }}
-                onMouseMove={handleMouseMove}
-                onMouseLeave={handleMouseLeave}
-                className="relative aspect-square lg:aspect-auto lg:h-[600px] group cursor-pointer"
-              >
                 <motion.div
-                  style={{
-                    transform: "translateZ(50px)",
-                    transformStyle: "preserve-3d",
-                  }}
-                  className="absolute inset-0"
+                  initial={{ opacity: 0, y: 14 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.9, delay: 0.7, ease: EASE }}
+                  className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4"
                 >
-                  <img
-                    src={profilePic}
-                    alt="Soban Ali"
-                    className="w-full h-full object-contain opacity-90 group-hover:opacity-100 transition-opacity duration-500"
-                    referrerPolicy="no-referrer"
-                  />
+                  <a
+                    href="#work"
+                    onClick={(e) => go(e, 'work')}
+                    className="group inline-flex h-12 items-center gap-3 rounded-full bg-ink pl-6 pr-5 text-[15px] font-medium text-paper transition-colors duration-200 hover:bg-accent hover:text-accent-ink"
+                  >
+                    See selected work
+                    <ArrowDown size={17} className="transition-transform duration-300 group-hover:translate-y-0.5" />
+                  </a>
+                  <span className="flex items-center gap-3">
+                    <a href={`mailto:${profile.email}`} className="text-[15px] font-medium text-ink">
+                      <span className="link-draw">{profile.email}</span>
+                    </a>
+                    <CopyEmail />
+                  </span>
                 </motion.div>
-                
-                <motion.div 
-                  style={{
-                    transform: "translateZ(80px)",
-                  }}
-                  className="absolute bottom-8 left-8"
-                >
-                  <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-cyan mb-2">// est. Lahore, Pakistan</div>
-                  <div className="text-2xl font-display font-bold text-text-hi uppercase">Soban Ali</div>
-                </motion.div>
+              </div>
+
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1, delay: 0.4 }}
+                className="lg:col-span-5 lg:pt-6"
+              >
+                <AttentionFigure />
               </motion.div>
             </div>
+
+            <motion.dl
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1, delay: 0.9 }}
+              className="mt-20 grid border-t border-rule-strong sm:grid-cols-3 md:mt-24"
+            >
+              {[
+                ['Now', 'AI Intern at Ledelsea — building a RAG system that drafts RFP proposals.'],
+                ['Recently', 'Ranked 117th of 1,980 teams worldwide in the Reply Code Challenge.'],
+                ['Studying', 'B.S. Computer Science at FAST NUCES, CGPA 3.70, graduating June 2027.'],
+              ].map(([k, v], i) => (
+                <div key={k} className={`py-5 sm:pr-8 ${i > 0 ? 'border-t border-rule sm:border-l sm:border-t-0 sm:pl-8' : ''}`}>
+                  <dt className="label mb-2">{k}</dt>
+                  <dd className="text-[15px] leading-relaxed text-ink-2">{v}</dd>
+                </div>
+              ))}
+            </motion.dl>
           </div>
         </section>
 
-        <ChapterTransition nextNumber="03" line="Understanding demands the right tools." />
-
-        {/* --- CHAPTER 03: THE TOOLKIT (Skills) --- */}
-        <section id="skills" className="relative py-20 sm:py-32 px-6 bg-bg-deep/50">
-          <div className="max-w-7xl mx-auto">
-            <SectionHeader number="03" label="The Toolkit" title="What I Build With" />
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-24 gap-y-14 mt-16 max-w-3xl">
-              {skills.map((skillGroup, idx) => (
-                <motion.div
-                  key={skillGroup.category}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: idx * 0.1 }}
-                >
-                  <h3 className={`font-display font-bold text-xs uppercase tracking-[0.25em] mb-4 ${skillColors[skillGroup.color].split(' ')[0]}`}>
-                    {skillGroup.category}
-                  </h3>
-                  <div className="border-t border-rule mb-4" />
-                  <p className="font-body text-sm text-text-lo leading-relaxed">
-                    {skillGroup.items.join(' · ')}
+        {/* ——— § 01 About ——— */}
+        <section id="about" className="py-20 md:py-32">
+          <div className={CONTAINER}>
+            <SectionHeader
+              number="01"
+              name="About"
+              title={<>Read deeply, rebuild carefully, <Em>then go further.</Em></>}
+            />
+            <div className="grid gap-14 lg:grid-cols-12 lg:gap-10">
+              <div className="lg:col-span-7">
+                <Reveal>
+                  <p className="text-[clamp(1.2rem,1.6vw,1.375rem)] leading-[1.6] text-ink">
+                    I’m a final-year computer science student at FAST NUCES, graduating in June 2027 — and an AI
+                    engineer in progress. From architecting multi-agent systems to implementing machine-learning
+                    algorithms from scratch, I’m after theoretical depth and hands-on intuition in equal measure.
                   </p>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
+                </Reveal>
+                <Reveal delay={0.05}>
+                  <p className="mt-6 max-w-[62ch] text-[17px] leading-[1.75]">
+                    The project I’m proudest of so far: replicating a malware-detection research paper and pushing it
+                    past the original benchmark. That kind of work — reading deeply, rebuilding carefully, then going
+                    further — is exactly how I learn best.
+                  </p>
+                </Reveal>
+                <Reveal delay={0.1}>
+                  <p className="mt-6 max-w-[62ch] text-[17px] leading-[1.75]">
+                    I’m drawn to AI because the field moves fast and the stakes are real. I’d rather be one of the
+                    people steering it than someone it leaves behind.
+                  </p>
+                </Reveal>
 
-        <ChapterTransition nextNumber="04" line="Tools mean nothing until something gets built." />
-
-        {/* --- CHAPTER 04: THE BUILDS (Projects) --- */}
-        <section id="projects" className="relative min-h-screen py-20 sm:py-32 px-6">
-          <div className="max-w-7xl mx-auto">
-            <SectionHeader number="04" label="The Builds" title="Proof of Work" />
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-20">
-              {projects.map((project) => (
-                <ProjectCard 
-                  key={project.title} 
-                  title={project.title}
-                  tagline={project.tagline}
-                  description={project.description}
-                  techStack={project.techStack}
-                  githubUrl={project.githubUrl}
-                  microAnim={project.microAnim}
-                />
-              ))}
-            </div>
-
-            <div className="mt-20 text-center">
-              <p className="font-body text-[10px] uppercase tracking-widest opacity-70 mb-8 italic">Each build taught something the last one couldn't.</p>
-              <a href="https://github.com/sobanali256" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-accent-cyan hover:underline font-body text-xs uppercase tracking-widest">
-                More on GitHub <Github size={14} />
-              </a>
-            </div>
-          </div>
-        </section>
-
-        <ChapterTransition nextNumber="05" line="Then the work left the sandbox." />
-
-        {/* --- CHAPTER 05: THE FIELD (Experience) --- */}
-        <section id="experience" className="relative min-h-screen py-20 sm:py-32 px-6 bg-bg-deep/50 flex items-center">
-          <div className="max-w-7xl mx-auto w-full">
-            <SectionHeader number="05" label="The Field" title="Theory, Meet Production" className="text-center" />
-
-            <div className="relative mt-20 max-w-3xl mx-auto">
-              {/* Timeline rail */}
-              <div className="absolute left-2 top-2 bottom-2 w-px bg-rule" />
-              <motion.div
-                style={{ scaleY: scrollYProgress }}
-                className="absolute left-2 top-2 bottom-2 w-px bg-accent-cyan origin-top"
-              />
-
-              <div className="space-y-12">
-                {experiences.map((exp, idx) => (
-                  <motion.div
-                    key={idx}
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-80px" }}
-                    transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-                    className="relative pl-10 md:pl-14"
-                  >
-                    {/* Node */}
-                    <div className="absolute left-2 top-2 w-3.5 h-3.5 rounded-full bg-accent-cyan border-4 border-bg-deep -translate-x-1/2 z-10" />
-
-                    <div className="bg-bg-card border border-rule rounded-xl p-6 sm:p-8 hover:border-accent-cyan/30 transition-colors">
-                      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-6">
-                        <div>
-                          <h3 className="text-2xl font-display font-bold text-text-hi uppercase tracking-tight">{exp.role}</h3>
-                          <div className="font-body text-sm text-accent-cyan mt-1">
-                            {exp.company} <span className="text-text-lo opacity-60">· {exp.type}</span>
-                          </div>
-                        </div>
-                        <div className="font-body text-[10px] uppercase tracking-widest text-accent-vio whitespace-nowrap sm:pt-1">
-                          {exp.period}
-                        </div>
+                <Reveal delay={0.1}>
+                  <dl className="mt-12 grid grid-cols-2 gap-x-8 border-t border-rule md:grid-cols-4">
+                    {[
+                      ['Based in', 'Lahore, PK'],
+                      ['Degree', 'B.S. CS, FAST'],
+                      ['CGPA', '3.70'],
+                      ['Graduating', 'June 2027'],
+                    ].map(([k, v]) => (
+                      <div key={k} className="border-b border-rule py-4 md:border-b-0">
+                        <dt className="label mb-1.5">{k}</dt>
+                        <dd className="text-[15px] text-ink tabular">{v}</dd>
                       </div>
-
-                      <ul className="space-y-3 mb-6">
-                        {exp.points.map((point, i) => (
-                          <li key={i} className="flex gap-3 font-body text-sm text-text-lo leading-relaxed">
-                            <span className="mt-2 w-1.5 h-1.5 rounded-full bg-accent-cyan shrink-0" />
-                            <span>{point}</span>
-                          </li>
-                        ))}
-                      </ul>
-
-                      <div className="flex flex-wrap gap-2">
-                        {exp.tech.map((t) => (
-                          <span
-                            key={t}
-                            className="px-3 py-1 border border-rule font-mono text-[9px] uppercase tracking-widest text-text-lo"
-                          >
-                            {t}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
+                    ))}
+                  </dl>
+                </Reveal>
               </div>
+
+              <Reveal delay={0.1} className="lg:col-span-4 lg:col-start-9">
+                <figure>
+                  <div className="relative aspect-[4/5] overflow-hidden rounded-[3px] bg-paper-2">
+                    <div aria-hidden="true" className="ruled absolute inset-0 opacity-70" />
+                    <img
+                      src={portrait}
+                      alt="Illustrated 3D portrait of Soban Ali in a navy blazer"
+                      width={640}
+                      height={962}
+                      loading="lazy"
+                      decoding="async"
+                      className="absolute inset-x-0 bottom-0 mx-auto h-[94%] w-auto object-contain object-bottom"
+                    />
+                  </div>
+                  <figcaption className="mt-3 flex justify-between gap-4 text-[13px] text-muted">
+                    <span><span className="font-medium text-ink">Plate I</span> — The author, rendered.</span>
+                    <span>Lahore, PK</span>
+                  </figcaption>
+                </figure>
+              </Reveal>
             </div>
           </div>
         </section>
 
-        <ChapterTransition nextNumber="06" line="The story is still being written." />
-
-        {/* --- CHAPTER 06: THE NEXT CHAPTER (Contact) --- */}
-        <section id="contact" className="relative min-h-screen py-20 sm:py-32 px-6 flex items-center">
-          <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-20">
-            <div>
-              <SectionHeader number="06" label="The Next Chapter" title="What Comes Next" />
-              <p className="font-body text-lg text-text-lo leading-relaxed mb-12 max-w-md">
-                Graduating June 2027 and looking for the right place to keep building. If you're working on something in AI worth doing well — a role, a research collaboration, a hard problem — I'd like to hear about it. I read every message.
-              </p>
-
-              <div className="space-y-8">
-                <a href="mailto:sobanali256@gmail.com" className="flex items-center gap-4 sm:gap-6 group min-w-0">
-                  <div className="w-12 h-12 shrink-0 rounded-sm bg-bg-void/60 backdrop-blur-sm border border-rule flex items-center justify-center group-hover:border-accent-cyan transition-colors">
-                    <Mail size={20} className="text-text-lo group-hover:text-accent-cyan transition-colors" />
-                  </div>
-                  <div className="min-w-0">
-                    <div className="font-body text-[10px] uppercase tracking-widest opacity-50">Email</div>
-                    <div className="text-text-hi font-mono break-all">sobanali256@gmail.com</div>
-                  </div>
-                </a>
-                <a href="https://linkedin.com/in/sobanali256" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 sm:gap-6 group min-w-0">
-                  <div className="w-12 h-12 shrink-0 rounded-sm bg-bg-void/60 backdrop-blur-sm border border-rule flex items-center justify-center group-hover:border-accent-cyan transition-colors">
-                    <Linkedin size={20} className="text-text-lo group-hover:text-accent-cyan transition-colors" />
-                  </div>
-                  <div className="min-w-0">
-                    <div className="font-body text-[10px] uppercase tracking-widest opacity-50">LinkedIn</div>
-                    <div className="text-text-hi font-mono break-all">linkedin.com/in/sobanali256</div>
-                  </div>
-                </a>
-              </div>
-            </div>
-
-            <div className="bg-bg-card border border-rule p-6 sm:p-10 rounded-sm">
-              <form
-                onSubmit={handleSubmit}
-                noValidate
-                className="space-y-8"
+        {/* ——— § 02 Work ——— */}
+        <section id="work" className="py-20 md:py-32">
+          <div className={CONTAINER}>
+            <SectionHeader
+              number="02"
+              name="Work"
+              title={<>Selected work, <Em>with receipts.</Em></>}
+              aside={`${projects.length} projects`}
+            />
+            <ProjectIndex projects={projects} />
+            <Reveal className="mt-10 flex flex-wrap items-center justify-between gap-4">
+              <p className="text-[15px] text-muted">Each build taught something the last one couldn’t.</p>
+              <a
+                href={profile.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex items-center gap-1 text-[15px] font-medium text-ink"
               >
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div className="space-y-2">
-                    <label className="font-body text-[10px] uppercase tracking-widest opacity-50">Name</label>
-                    <input 
-                      name="name" 
-                      type="text" 
-                      value={formState.name}
-                      onChange={handleInputChange}
-                      className={`w-full bg-transparent border-b py-2 outline-none transition-colors font-body text-text-hi ${formErrors.name ? 'border-accent-cor' : 'border-rule focus:border-accent-cyan'}`} 
-                    />
-                    <AnimatePresence>
-                      {formErrors.name && (
-                        <motion.div 
-                          initial={{ opacity: 0, y: -10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -10 }}
-                          className="flex items-center gap-2 text-accent-cor font-body text-[9px] uppercase tracking-wider"
-                        >
-                          <AlertCircle size={10} />
-                          {formErrors.name}
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                  <div className="space-y-2">
-                    <label className="font-body text-[10px] uppercase tracking-widest opacity-50">Email</label>
-                    <input 
-                      name="email" 
-                      type="email" 
-                      value={formState.email}
-                      onChange={handleInputChange}
-                      className={`w-full bg-transparent border-b py-2 outline-none transition-colors font-body text-text-hi ${formErrors.email ? 'border-accent-cor' : 'border-rule focus:border-accent-cyan'}`} 
-                    />
-                    <AnimatePresence>
-                      {formErrors.email && (
-                        <motion.div 
-                          initial={{ opacity: 0, y: -10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -10 }}
-                          className="flex items-center gap-2 text-accent-cor font-body text-[9px] uppercase tracking-wider"
-                        >
-                          <AlertCircle size={10} />
-                          {formErrors.email}
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <label className="font-body text-[10px] uppercase tracking-widest opacity-50">Subject</label>
-                  <input 
-                    name="subject" 
-                    type="text" 
-                    value={formState.subject}
-                    onChange={handleInputChange}
-                    className={`w-full bg-transparent border-b py-2 outline-none transition-colors font-body text-text-hi ${formErrors.subject ? 'border-accent-cor' : 'border-rule focus:border-accent-cyan'}`} 
-                  />
-                  <AnimatePresence>
-                    {formErrors.subject && (
-                      <motion.div 
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        className="flex items-center gap-2 text-accent-cor font-body text-[9px] uppercase tracking-wider"
-                      >
-                        <AlertCircle size={10} />
-                        {formErrors.subject}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-                <div className="space-y-2">
-                  <label className="font-body text-[10px] uppercase tracking-widest opacity-50">Message</label>
-                  <textarea 
-                    name="message" 
-                    rows={4} 
-                    value={formState.message}
-                    onChange={handleInputChange}
-                    className={`w-full bg-transparent border-b py-2 outline-none transition-colors font-body text-text-hi resize-none ${formErrors.message ? 'border-accent-cor' : 'border-rule focus:border-accent-cyan'}`} 
-                  />
-                  <AnimatePresence>
-                    {formErrors.message && (
-                      <motion.div 
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        className="flex items-center gap-2 text-accent-cor font-body text-[9px] uppercase tracking-wider"
-                      >
-                        <AlertCircle size={10} />
-                        {formErrors.message}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-                
-                <div className="relative">
-                  <motion.button
-                    type="submit"
-                    disabled={isSubmitting || isSuccess}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    className={`w-full py-4 font-display font-bold uppercase tracking-widest rounded-sm transition-all duration-300 flex items-center justify-center gap-3 ${
-                      isSuccess
-                        ? 'bg-accent-emerald text-bg-void'
-                        : 'bg-accent-cyan text-bg-void'
-                    } ${isSubmitting ? 'opacity-70 cursor-wait' : ''}`}
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <motion.div 
-                          animate={{ rotate: 360 }}
-                          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                          className="w-4 h-4 border-2 border-bg-void/30 border-t-bg-void rounded-full"
-                        />
-                        Sending...
-                      </>
-                    ) : isSuccess ? (
-                      <>
-                        <CheckCircle2 size={18} />
-                        Message Sent
-                      </>
-                    ) : (
-                      'Send Message'
-                    )}
-                  </motion.button>
-
-                  <AnimatePresence>
-                    {isSuccess && (
-                      <motion.p
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 10 }}
-                        className="absolute -bottom-8 left-0 w-full text-center font-body text-[10px] text-accent-emerald uppercase tracking-widest"
-                      >
-                        Thanks — I'll get back to you soon.
-                      </motion.p>
-                    )}
-                    {submitError && (
-                      <motion.p
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 10 }}
-                        className="absolute -bottom-8 left-0 w-full flex items-center justify-center gap-2 font-body text-[10px] text-accent-cor uppercase tracking-widest"
-                      >
-                        <AlertCircle size={10} />
-                        Something went wrong. Try again or email me directly.
-                      </motion.p>
-                    )}
-                  </AnimatePresence>
-                </div>
-              </form>
-            </div>
+                <span className="link-draw">Everything else on GitHub</span>
+                <ArrowUpRight size={16} className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+              </a>
+            </Reveal>
           </div>
         </section>
 
-        {/* --- FOOTER --- */}
-        <footer className="py-12 px-6 border-t border-rule bg-bg-void relative z-10">
-          <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
-            <div className="font-body text-[10px] uppercase tracking-widest opacity-40">
-              © 2026 Soban Ali — written chapter by chapter
-            </div>
-            <div className="flex items-center gap-8">
-              <a href="https://github.com/sobanali256" target="_blank" rel="noopener noreferrer" className="font-body text-[10px] uppercase tracking-widest hover:text-accent-cyan transition-colors">Github</a>
-              <a href="https://linkedin.com/in/sobanali256" target="_blank" rel="noopener noreferrer" className="font-body text-[10px] uppercase tracking-widest hover:text-accent-cyan transition-colors">Linkedin</a>
-            </div>
-            <div className="font-body text-[10px] uppercase tracking-widest opacity-40">
-              Lahore, Pakistan
+        {/* ——— § 03 Experience ——— */}
+        <section id="experience" className="bg-paper-2 py-20 md:py-32">
+          <div className={CONTAINER}>
+            <SectionHeader number="03" name="Experience" title={<>Theory, meet <Em>production.</Em></>} />
+            <ol>
+              {experiences.map((exp, i) => (
+                <Reveal
+                  as="li"
+                  key={exp.org}
+                  delay={i * 0.05}
+                  className="grid gap-x-10 gap-y-4 border-t border-rule-strong py-9 md:grid-cols-12 md:py-11"
+                >
+                  <p className="font-mono text-[12.5px] text-muted tabular md:col-span-3 md:pt-2">{exp.period}</p>
+                  <div className="md:col-span-4">
+                    <h3 className="font-display text-[clamp(1.75rem,2.6vw,2.25rem)] leading-[1.08]">{exp.role}</h3>
+                    <p className="mt-2 text-[15px] text-ink-2">
+                      {exp.org} <span className="text-muted">· {exp.kind}</span>
+                    </p>
+                  </div>
+                  <div className="md:col-span-5 md:pt-1.5">
+                    <ul className="space-y-3">
+                      {exp.points.map((pt) => (
+                        <li key={pt} className="relative pl-5 text-[16px] leading-[1.7]">
+                          <span aria-hidden="true" className="absolute left-0 top-[0.85em] h-px w-2.5 bg-rule-strong" />
+                          {pt}
+                        </li>
+                      ))}
+                    </ul>
+                    {exp.stack.length > 0 && (
+                      <p className="mt-5 font-mono text-[11.5px] text-muted">{exp.stack.join('  ·  ')}</p>
+                    )}
+                  </div>
+                </Reveal>
+              ))}
+            </ol>
+          </div>
+        </section>
+
+        {/* ——— § 04 Stack ——— */}
+        <section id="stack" className="py-20 md:py-32">
+          <div className={CONTAINER}>
+            <SectionHeader number="04" name="Stack" title={<>The tools, <Em>used in anger.</Em></>} />
+            <dl>
+              {stack.map((g, i) => (
+                <Reveal
+                  key={g.group}
+                  delay={i * 0.04}
+                  className="grid gap-x-10 gap-y-2 border-t border-rule py-6 md:grid-cols-12 md:py-7"
+                >
+                  <dt className="label md:col-span-3 md:pt-2">{g.group}</dt>
+                  <dd className="text-[clamp(1.2rem,2vw,1.6rem)] leading-[1.45] text-ink md:col-span-9">
+                    {g.items.map((item, j) => (
+                      <React.Fragment key={item}>
+                        <span className="whitespace-nowrap">{item}</span>
+                        {j < g.items.length - 1 && <span aria-hidden="true" className="mx-1.5 text-rule-strong"> / </span>}
+                      </React.Fragment>
+                    ))}
+                  </dd>
+                </Reveal>
+              ))}
+            </dl>
+          </div>
+        </section>
+
+        {/* ——— § 05 Contact ——— */}
+        <section id="contact" className="py-20 md:py-32">
+          <div className={CONTAINER}>
+            <SectionHeader number="05" name="Contact" title={<>Let’s build something <Em>worth doing well.</Em></>} />
+            <div className="grid gap-16 lg:grid-cols-12 lg:gap-10">
+              <Reveal className="lg:col-span-5">
+                <p className="max-w-[44ch] text-[17px] leading-[1.75]">
+                  Graduating June 2027 and looking for the right place to keep building. If you’re working on something
+                  in AI worth doing well — a role, a research collaboration, a hard problem — I’d like to hear about it.
+                  I read every message.
+                </p>
+
+                <div className="mt-10 flex items-center gap-3">
+                  <a
+                    href={`mailto:${profile.email}`}
+                    className="min-w-0 break-all font-display text-[clamp(1.6rem,3vw,2.4rem)] leading-tight text-ink"
+                  >
+                    <span className="link-draw">{profile.email}</span>
+                  </a>
+                  <CopyEmail />
+                </div>
+
+                <ul className="mt-10 border-t border-rule">
+                  {[
+                    ['LinkedIn', profile.linkedin, 'in/sobanali256'],
+                    ['GitHub', profile.github, 'sobanali256'],
+                  ].map(([name, href, handle]) => (
+                    <li key={name} className="border-b border-rule">
+                      <a
+                        href={href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group flex items-center justify-between py-4 text-[15px]"
+                      >
+                        <span className="text-ink">{name}</span>
+                        <span className="flex items-center gap-2 text-muted transition-colors group-hover:text-ink">
+                          {handle}
+                          <ArrowUpRight size={15} className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                        </span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+                <p className="mt-6 text-[14px] text-muted">
+                  It’s <LocalTime timeZone={profile.timeZone} /> in Lahore right now.
+                </p>
+              </Reveal>
+
+              <Reveal delay={0.08} className="lg:col-span-6 lg:col-start-7">
+                <ContactForm />
+              </Reveal>
             </div>
           </div>
-        </footer>
+        </section>
       </main>
+
+      {/* ——— Colophon ——— */}
+      <footer className="overflow-hidden border-t border-rule-strong">
+        <div className={`${CONTAINER} grid gap-6 py-8 text-[13px] text-muted sm:grid-cols-3`}>
+          <p>© {new Date().getFullYear()} {profile.name}</p>
+          <p className="sm:text-center">Set in Instrument Serif, Geist &amp; Geist Mono.</p>
+          <a
+            href="#top"
+            onClick={(e) => go(e, 'top')}
+            className="group inline-flex items-center gap-1.5 text-ink sm:justify-self-end"
+          >
+            <span className="link-draw">Back to top</span>
+            <ArrowUp size={14} className="transition-transform duration-300 group-hover:-translate-y-0.5" />
+          </a>
+        </div>
+        <p
+          aria-hidden="true"
+          className="-mb-[0.22em] select-none whitespace-nowrap text-center font-display text-[clamp(5rem,21vw,20rem)] leading-none tracking-[-0.03em] text-ink/[0.07]"
+        >
+          Soban <span className="italic">Ali</span>
+        </p>
+      </footer>
       <Analytics />
-    </div>
+    </MotionConfig>
   );
 }

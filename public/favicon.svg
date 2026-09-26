@@ -1,11 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
-  <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#6EE7F7"/>
-      <stop offset="100%" stop-color="#B57BFF"/>
-    </linearGradient>
-  </defs>
-  <rect width="64" height="64" rx="14" fill="#0A0A0F"/>
-  <rect x="1.5" y="1.5" width="61" height="61" rx="12.5" fill="none" stroke="url(#g)" stroke-opacity="0.5" stroke-width="1.5"/>
-  <text x="32" y="33" font-family="'Sora','Segoe UI',system-ui,sans-serif" font-size="40" font-weight="800" fill="url(#g)" text-anchor="middle" dominant-baseline="central" letter-spacing="-2">S</text>
+  <style>
+    .bg { fill: #F7F3EC; } .ink { fill: #1E1A15; } .mark { fill: #C8431F; }
+    @media (prefers-color-scheme: dark) { .bg { fill: #16130F; } .ink { fill: #F1ECE3; } .mark { fill: #EE7650; } }
+  </style>
+  <rect class="bg" width="64" height="64" rx="12"/>
+  <text class="ink" x="29" y="34" font-family="'Instrument Serif',Georgia,serif" font-size="46" font-style="italic" text-anchor="middle" dominant-baseline="central">S</text>
+  <rect class="mark" x="44" y="44" width="8" height="8"/>
 </svg>

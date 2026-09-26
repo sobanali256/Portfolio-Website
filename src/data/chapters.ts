@@ -7,32 +7,26 @@ export interface Chapter {
 }
 
 // Single source of truth for section ids/numbers/order.
-// Navbar and ChapterProgress both render from this list.
+// The Navbar renders from this list; each section's <SectionHeader> uses the same number.
 export const chapters: Chapter[] = [
-  { id: 'hero', number: '01', name: 'The Spark' },
-  { id: 'about', number: '02', name: 'The Origin' },
-  { id: 'skills', number: '03', name: 'The Toolkit' },
-  { id: 'projects', number: '04', name: 'The Builds' },
-  { id: 'experience', number: '05', name: 'The Field' },
-  { id: 'contact', number: '06', name: 'Next Chapter' },
+  { id: 'about', number: '01', name: 'About' },
+  { id: 'work', number: '02', name: 'Work' },
+  { id: 'experience', number: '03', name: 'Experience' },
+  { id: 'stack', number: '04', name: 'Stack' },
+  { id: 'contact', number: '05', name: 'Contact' },
 ];
 
-export function scrollToChapter(id: string, lenis?: Lenis | null) {
-  const element = document.getElementById(id);
-  if (element) {
-    const offset = 56; // Navbar height
-    const bodyRect = document.body.getBoundingClientRect().top;
-    const elementRect = element.getBoundingClientRect().top;
-    const elementPosition = elementRect - bodyRect;
-    const offsetPosition = elementPosition - offset;
+export const NAV_HEIGHT = 64;
 
-    if (lenis) {
-      lenis.scrollTo(offsetPosition);
-    } else {
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
-      });
-    }
+export function scrollToChapter(id: string, lenis?: Lenis | null) {
+  if (id === 'top') {
+    if (lenis) lenis.scrollTo(0);
+    else window.scrollTo({ top: 0, behavior: 'smooth' });
+    return;
   }
+  const element = document.getElementById(id);
+  if (!element) return;
+  const top = element.getBoundingClientRect().top + window.scrollY - NAV_HEIGHT;
+  if (lenis) lenis.scrollTo(top);
+  else window.scrollTo({ top, behavior: 'smooth' });
 }

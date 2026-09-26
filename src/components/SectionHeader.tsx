@@ -1,37 +1,31 @@
-import { motion } from 'motion/react';
+import type { ReactNode } from 'react';
+import Reveal from './Reveal';
 
 interface SectionHeaderProps {
   number: string;
-  label: string;
-  title: string;
-  className?: string;
+  name: string;
+  title: ReactNode;
+  aside?: ReactNode;
 }
 
-export default function SectionHeader({ number, label, title, className = '' }: SectionHeaderProps) {
+// Running head for a section: a full-width rule, the "§ 02 — Work" marker, then the
+// serif heading. Matches the numbering in data/chapters.ts.
+export default function SectionHeader({ number, name, title, aside }: SectionHeaderProps) {
   return (
-    <div className={`mb-16 ${className}`}>
-      <div className="flex items-center justify-between border-b border-rule pb-4 mb-8">
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="font-body text-[10px] uppercase tracking-[0.3em] text-accent-cyan opacity-70"
-        >
-          <span className="opacity-50">Chapter {number} · </span>
-          <span>{label}</span>
-        </motion.div>
-        <div className="hidden md:block w-24 h-px bg-rule/50" />
+    <header className="mb-12 md:mb-16">
+      <div className="flex items-center justify-between border-t border-rule-strong pt-4">
+        <span className="label">
+          <span className="text-accent">§ {number}</span>
+          <span className="mx-2 text-rule-strong">—</span>
+          {name}
+        </span>
+        {aside && <span className="label hidden sm:block">{aside}</span>}
       </div>
-      <motion.h2
-        initial={{ opacity: 0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: 1, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-        className="text-[clamp(1.875rem,5vw,3.5rem)] font-display font-extrabold text-text-hi uppercase tracking-tight leading-[1.05]"
-      >
-        {title}
-      </motion.h2>
-    </div>
+      <Reveal>
+        <h2 className="mt-8 max-w-[18ch] font-display text-[clamp(2.5rem,5.5vw,4.5rem)] leading-[1.02] tracking-[-0.01em]">
+          {title}
+        </h2>
+      </Reveal>
+    </header>
   );
 }

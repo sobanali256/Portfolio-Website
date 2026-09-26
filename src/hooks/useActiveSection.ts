@@ -1,28 +1,28 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
+// Returns the id of the section currently crossing the upper third of the viewport,
+// or '' while above the first section (i.e. in the hero).
 export default function useActiveSection(ids: string[]): string {
-  const [activeSection, setActiveSection] = useState(ids[0] ?? '');
+  const [active, setActive] = useState('');
 
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY + 100;
-
-      ids.forEach(id => {
-        const section = document.getElementById(id);
-        if (section) {
-          const top = section.offsetTop;
-          const height = section.offsetHeight;
-          if (scrollPosition >= top && scrollPosition < top + height) {
-            setActiveSection(id);
-          }
-        }
-      });
+    const onScroll = () => {
+      const probe = window.scrollY + window.innerHeight * 0.33;
+      let current = '';
+      for (const id of ids) {
+        const el = document.getElementById(id);
+        if (el && el.offsetTop <= probe) current = id;
+      }
+      setActive(current);
     };
-
-    handleScroll();
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+    };
   }, [ids.join(',')]);
 
-  return activeSection;
+  return active;
 }

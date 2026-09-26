@@ -1,120 +1,156 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Menu, X } from 'lucide-react';
+import { Moon, Sun } from 'lucide-react';
 import { useLenis } from 'lenis/react';
 import { chapters, scrollToChapter } from '../data/chapters';
+import { profile } from '../data/content';
 import useActiveSection from '../hooks/useActiveSection';
+import useTheme from '../hooks/useTheme';
 
-const chapterIds = chapters.map(c => c.id);
+const chapterIds = chapters.map((c) => c.id);
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
   const activeSection = useActiveSection(chapterIds);
   const lenis = useLenis();
+  const { theme, toggle } = useTheme();
 
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 100);
-    };
-
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('resize', checkMobile);
-      window.removeEventListener('scroll', handleScroll);
-    };
+    const onScroll = () => setScrolled(window.scrollY > 12);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+  // Lock page scroll behind the mobile menu.
+  useEffect(() => {
+    if (isOpen) lenis?.stop();
+    else lenis?.start();
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setIsOpen(false);
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [isOpen, lenis]);
+
+  const go = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
     e.preventDefault();
-    scrollToChapter(id, lenis);
     setIsOpen(false);
+    // Let the menu close (and Lenis restart) before scrolling.
+    requestAnimationFrame(() => scrollToChapter(id, lenis));
   };
 
   return (
     <>
-      <motion.nav
-        initial={{ y: -100 }}
-        animate={{ y: (scrolled || isMobile) ? 0 : -100 }}
-        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-        className="fixed top-0 left-0 right-0 h-14 z-50 glass-nav px-6 flex items-center justify-between"
+      <nav
+        aria-label="Primary"
+        className={`fixed inset-x-0 top-0 z-50 h-16 transition-[background-color,border-color] duration-300 ${
+          scrolled || isOpen ? 'border-b border-rule bg-paper/85 backdrop-blur-md' : 'border-b border-transparent'
+        }`}
       >
-        <div className="font-display font-bold text-text-hi text-sm tracking-widest">
-          SOBAN ALI
-        </div>
+        <div className="mx-auto flex h-full max-w-[1320px] items-center justify-between px-5 sm:px-8">
+          <a
+            href="#top"
+            onClick={(e) => go(e, 'top')}
+            className="group flex items-baseline gap-2 font-display text-[1.45rem] leading-none text-ink"
+          >
+            <span className="italic">{profile.name}</span>
+            <span aria-hidden="true" className="inline-block size-1.5 translate-y-[-2px] bg-accent transition-transform duration-300 group-hover:rotate-45" />
+          </a>
 
-        {/* Desktop Links */}
-        <div className="hidden md:flex items-center gap-8">
-          {chapters.map((link) => (
-            <a
-              key={link.id}
-              href={`#${link.id}`}
-              onClick={(e) => handleLinkClick(e, link.id)}
-              className="group relative flex items-center gap-2 font-body text-[10px] uppercase tracking-widest transition-colors hover:text-accent-cyan"
+          <div className="flex items-center gap-1 sm:gap-2">
+            <ul className="hidden items-center md:flex">
+              {chapters.map((link) => {
+                const active = activeSection === link.id;
+                return (
+                  <li key={link.id}>
+                    <a
+                      href={`#${link.id}`}
+                      onClick={(e) => go(e, link.id)}
+                      aria-current={active ? 'true' : undefined}
+                      className={`group flex items-baseline gap-1.5 px-3 py-2 text-[13.5px] transition-colors duration-200 ${
+                        active ? 'text-ink' : 'text-muted hover:text-ink'
+                      }`}
+                    >
+                      <span className={`font-mono text-[10px] tabular ${active ? 'text-accent' : 'text-rule-strong group-hover:text-muted'}`}>
+                        {link.number}
+                      </span>
+                      <span className="relative">
+                        {link.name}
+                        {active && (
+                          <motion.span
+                            layoutId="nav-underline"
+                            className="absolute -bottom-1 left-0 h-px w-full bg-ink"
+                            transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+                          />
+                        )}
+                      </span>
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+
+            <button
+              type="button"
+              onClick={toggle}
+              aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
+              className="grid size-10 cursor-pointer place-items-center rounded-full text-muted transition-colors duration-200 hover:bg-paper-2 hover:text-ink"
             >
-              <span className="text-accent-cyan opacity-60">{link.number}</span>
-              <span className={activeSection === link.id ? 'text-accent-cyan' : 'text-text-lo'}>
-                {link.name}
+              {theme === 'dark' ? <Sun size={17} strokeWidth={1.6} /> : <Moon size={17} strokeWidth={1.6} />}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setIsOpen((o) => !o)}
+              aria-expanded={isOpen}
+              aria-controls="mobile-menu"
+              className="flex h-10 cursor-pointer items-center gap-2 rounded-full px-3 text-[13.5px] text-ink transition-colors hover:bg-paper-2 md:hidden"
+            >
+              <span>{isOpen ? 'Close' : 'Menu'}</span>
+              <span aria-hidden="true" className="relative block h-2.5 w-4">
+                <span className={`absolute left-0 h-px w-full bg-current transition-transform duration-300 ${isOpen ? 'top-1/2 rotate-45' : 'top-0'}`} />
+                <span className={`absolute left-0 h-px w-full bg-current transition-transform duration-300 ${isOpen ? 'top-1/2 -rotate-45' : 'bottom-0'}`} />
               </span>
-              {activeSection === link.id && (
-                <motion.div
-                  layoutId="nav-underline"
-                  className="absolute -bottom-1 left-0 w-full h-[1px] bg-accent-cyan"
-                  transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
-                />
-              )}
-            </a>
-          ))}
+            </button>
+          </div>
         </div>
+      </nav>
 
-        {/* Mobile Menu Toggle */}
-        <button
-          className="md:hidden text-text-hi z-100"
-          onClick={() => setIsOpen(!isOpen)}
-        >
-          {isOpen ? <X size={20} /> : <Menu size={20} />}
-        </button>
-      </motion.nav>
-
-      {/* Mobile Menu Overlay */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, x: '100%' }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: '100%' }}
-            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed inset-0 bg-bg-void z-[999] flex flex-col items-center justify-center gap-8 p-6 overflow-y-auto hide-scrollbar"
+            id="mobile-menu"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, transition: { duration: 0.2 } }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 top-16 z-40 flex flex-col justify-between overflow-y-auto bg-paper px-5 pb-10 pt-8 md:hidden"
           >
-            {/* Close Button */}
-            <button
-              className="absolute top-4 right-6 text-text-hi"
-              onClick={() => setIsOpen(false)}
-            >
-              <X size={24} />
-            </button>
-
-            {chapters.map((link, i) => (
-              <motion.a
-                key={link.id}
-                href={`#${link.id}`}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.1 }}
-                onClick={(e) => handleLinkClick(e, link.id)}
-                className="flex items-center gap-4 font-body text-lg md:text-xl uppercase tracking-[0.1em] md:tracking-[0.2em] text-center"
-              >
-                <span className="text-accent-cyan opacity-60">{link.number}</span>
-                <span className="text-text-hi">{link.name}</span>
-              </motion.a>
-            ))}
+            <ul className="border-t border-rule">
+              {chapters.map((link, i) => (
+                <motion.li
+                  key={link.id}
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.04 * i, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                  className="border-b border-rule"
+                >
+                  <a
+                    href={`#${link.id}`}
+                    onClick={(e) => go(e, link.id)}
+                    className="flex items-baseline justify-between py-4"
+                  >
+                    <span className="font-display text-[2.4rem] leading-none text-ink">{link.name}</span>
+                    <span className="font-mono text-xs text-accent tabular">{link.number}</span>
+                  </a>
+                </motion.li>
+              ))}
+            </ul>
+            <div className="mt-10 space-y-1 text-sm">
+              <a href={`mailto:${profile.email}`} className="block text-ink">{profile.email}</a>
+              <p className="text-muted">{profile.availability}</p>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
