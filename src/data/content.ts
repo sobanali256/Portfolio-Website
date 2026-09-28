@@ -89,6 +89,8 @@ export interface Experience {
   org: string;
   kind: string;
   points: string[];
+  /** Distinct pieces of work within one role, newest first; rendered after `points`. */
+  projects?: { name: string; period: string; points: string[] }[];
   stack: string[];
 }
 
@@ -98,12 +100,33 @@ export const experiences: Experience[] = [
     role: 'AI Intern',
     org: 'Ledelsea',
     kind: 'Internship',
-    points: [
-      'Sole developer of a RAG system that drafts RFP proposals, cutting the manual effort to a first draft.',
-      'Designed the pipeline end to end from an initial Docker skeleton: fixed-size chunking, all-MiniLM embeddings, ChromaDB.',
-      'Built hybrid retrieval — semantic search plus BM25 — with a reranker surfacing the ten most relevant chunks, and Claude for final generation.',
+    points: [],
+    projects: [
+      {
+        name: 'AI testing platform',
+        period: 'Aug 2026 — Now',
+        points: [
+          'Building a platform that reads an application’s source and writes its end-to-end tests: tree-sitter chunks the Java and TypeScript repos into pgvector, and a LangGraph pipeline on Amazon Bedrock maps the business process into scenarios and test cases.',
+          'A person approves each case; it then becomes a Playwright script that is statically checked and dry-run before it runs against the live app. Failures are diagnosed from the trace, console and screenshot, with evidence in S3 and results on a React dashboard.',
+        ],
+      },
+      {
+        name: 'Proposal-writing skills for Claude',
+        period: 'Jun — Aug 2026',
+        points: [
+          'Built eight Claude skills that write complete RFP responses in a 15-phase workflow: classify the bid, extract every requirement, draft each section in its own subagent from 29 indexed past proposals, and build the Word document.',
+          'Python quality gates check depth, voice, style and buyer-table fidelity, and the document isn’t built until they pass. Used on five real public-sector RFPs.',
+        ],
+      },
+      {
+        name: 'RAG proposal generator',
+        period: 'Apr — May 2026',
+        points: [
+          'Built the retrieval core: hybrid search fusing BM25 with all-MiniLM embeddings in ChromaDB, parent-chunk context, claim-level evidence and client-confidentiality guardrails, with Claude writing. Shelved mid-build when the team moved to the skills approach.',
+        ],
+      },
     ],
-    stack: ['Python', 'ChromaDB', 'BM25', 'Claude API', 'Docker'],
+    stack: ['LangGraph', 'Amazon Bedrock', 'Playwright', 'pgvector', 'FastAPI', 'Claude skills', 'ChromaDB'],
   },
   {
     period: 'Apr 2026',
@@ -128,8 +151,8 @@ export const experiences: Experience[] = [
 ];
 
 export const stack: { group: string; items: string[] }[] = [
-  { group: 'Generative AI', items: ['LangChain', 'CrewAI', 'OpenAI API', 'Claude API', 'Hugging Face', 'LangFuse'] },
-  { group: 'Retrieval', items: ['ChromaDB', 'all-MiniLM', 'BM25', 'Reranking'] },
+  { group: 'Generative AI', items: ['LangGraph', 'LangChain', 'CrewAI', 'Amazon Bedrock', 'Claude API', 'OpenAI API', 'Hugging Face', 'LangFuse'] },
+  { group: 'Retrieval', items: ['pgvector', 'ChromaDB', 'all-MiniLM', 'BM25', 'Hybrid search'] },
   { group: 'Machine learning', items: ['PyTorch', 'TensorFlow', 'Keras', 'scikit-learn', 'OpenCV'] },
   { group: 'Data', items: ['NumPy', 'Pandas', 'Matplotlib', 'NLTK'] },
   { group: 'Engineering', items: ['Python', 'Node.js', 'PostgreSQL', 'Docker', 'AWS'] },
