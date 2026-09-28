@@ -400,9 +400,8 @@ export default function App() {
 
       {/* ——— Colophon ——— */}
       <footer className="overflow-hidden border-t border-rule-strong">
-        <div className={`${CONTAINER} grid gap-6 py-8 text-[13px] text-muted sm:grid-cols-3`}>
+        <div className={`${CONTAINER} grid gap-6 py-8 text-[13px] text-muted sm:grid-cols-2`}>
           <p>© {new Date().getFullYear()} {profile.name}</p>
-          <p className="sm:text-center">Set in Instrument Serif, Geist &amp; Geist Mono.</p>
           <a
             href="#top"
             onClick={(e) => go(e, 'top')}
