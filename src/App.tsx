@@ -319,7 +319,7 @@ export default function App() {
         {/* ——— § 04 Stack ——— */}
         <section id="stack" className="py-20 md:py-32">
           <div className={CONTAINER}>
-            <SectionHeader number="04" name="Stack" title={<>The tools, <Em>used in anger.</Em></>} />
+            <SectionHeader number="04" name="Stack" title={<>The tools I <Em>reach for.</Em></>} />
             <dl>
               {stack.map((g, i) => (
                 <Reveal
