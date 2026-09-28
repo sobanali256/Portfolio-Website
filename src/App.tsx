@@ -7,7 +7,7 @@ import Navbar from './components/Navbar';
 import SectionHeader from './components/SectionHeader';
 import ProjectIndex from './components/ProjectIndex';
 import ContactForm from './components/ContactForm';
-import AttentionFigure from './components/AttentionFigure';
+import PipelineFigure from './components/PipelineFigure';
 import LocalTime from './components/LocalTime';
 import Reveal from './components/Reveal';
 import { scrollToChapter } from './data/chapters';
@@ -142,7 +142,7 @@ export default function App() {
                 transition={{ duration: 1, delay: 0.4 }}
                 className="lg:col-span-5 lg:pt-6"
               >
-                <AttentionFigure />
+                <PipelineFigure />
               </motion.div>
             </div>
 

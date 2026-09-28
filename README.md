@@ -25,7 +25,7 @@ A modern, responsive personal portfolio website built with React, TypeScript, an
 ## ✨ Features
 
 - **Editorial "research paper" design** — numbered sections, captioned figures, serif display type on warm paper
-- **Live attention figure** — the hero is an animated causal self-attention heatmap over the tagline
+- **Live pipeline figure** — the hero is an animated schematic of a hybrid RAG pipeline
 - **Light & dark themes** — follows the OS preference, with a manual toggle
 - **Smooth animations** — Motion scroll reveals and Lenis smooth scrolling, both respecting reduced-motion
 - **Working contact form** — client-side validation, sent via Formspree
@@ -56,7 +56,7 @@ A modern, responsive personal portfolio website built with React, TypeScript, an
 Portfolio-Website/
 ├── src/
 │   ├── App.tsx        # Page sections
-│   ├── components/    # Navbar, AttentionFigure, ProjectIndex, ContactForm, …
+│   ├── components/    # Navbar, PipelineFigure, ProjectIndex, ContactForm, …
 │   ├── data/          # content.ts (all site copy) and chapters.ts (section ids)
 │   ├── hooks/         # useTheme, useActiveSection
 │   └── index.css      # Tailwind v4 theme tokens (light & dark)
