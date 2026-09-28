@@ -42,4 +42,4 @@ Single-page React 19 + TypeScript portfolio built with Vite 6. The entire site i
 
 ## Deployment
 
-Deployed on Vercel (`vercel.json`): build command `npm run build`, output `dist/`, with a catch-all rewrite to `/index.html` for SPA routing. Pushes to `main` auto-deploy. The README documents a `GEMINI_API_KEY` Vercel env var; `vite.config.ts` loads env vars via `loadEnv`.
+Deployed on Vercel (`vercel.json`): build command `npm run build`, output `dist/`, with a catch-all rewrite to `/index.html` for SPA routing. Pushes to `main` auto-deploy. No environment variables are required; `vite.config.ts` still loads them via `loadEnv`.

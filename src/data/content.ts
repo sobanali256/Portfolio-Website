@@ -20,7 +20,9 @@ export interface Project {
   detail: string;
   metric: { value: string; label: string };
   stack: string[];
-  href: string;
+  /** Source repo; omit for closed-source work. */
+  href?: string;
+  live?: string;
 }
 
 export const projects: Project[] = [
@@ -34,6 +36,17 @@ export const projects: Project[] = [
     metric: { value: '99.10%', label: 'accuracy · Malimg' },
     stack: ['TensorFlow', 'Keras', 'OpenCV', 'Python'],
     href: 'https://github.com/sobanali256/malware-detection-research-replication',
+  },
+  {
+    id: 'anitrack',
+    title: 'AniTrack',
+    kind: 'Web app · PWA',
+    summary: 'A personal anime journal, installable and live.',
+    detail:
+      'Track what you’re watching across five lists, see what airs today, browse and get genre-based recommendations from AniList and Jikan data, and chat with anime-character companions. Firebase handles auth and Firestore sync, with a guest mode that works before sign-up.',
+    metric: { value: 'Live', label: 'installable PWA' },
+    stack: ['React', 'Firebase', 'AniList GraphQL', 'Jikan API'],
+    live: 'https://anitrack-a3031.web.app',
   },
   {
     id: 'warroom',
@@ -58,17 +71,6 @@ export const projects: Project[] = [
     href: 'https://github.com/sobanali256/Machine-Learning',
   },
   {
-    id: 'sentiment',
-    title: 'Tweet Sentiment at Scale',
-    kind: 'NLP',
-    summary: '1.6M tweets, a custom preprocessor, models built from first principles.',
-    detail:
-      'A custom preprocessor that cut vocabulary by 40%, feeding hand-built Naive Bayes and logistic regression classifiers that reached 0.83 AUC.',
-    metric: { value: '0.83', label: 'AUC · 1.6M tweets' },
-    stack: ['scikit-learn', 'NLTK', 'Pandas', 'Python'],
-    href: 'https://github.com/sobanali256/Tweet-Sentiment-Analysis',
-  },
-  {
     id: 'resume',
     title: 'Resume Analyzer',
     kind: 'LLM application',
@@ -78,17 +80,6 @@ export const projects: Project[] = [
     metric: { value: '<10s', label: 'full report' },
     stack: ['OpenAI', 'PyPDF2', 'Streamlit', 'Python'],
     href: 'https://github.com/sobanali256/AI_Resume_Analyzer',
-  },
-  {
-    id: 'rasth',
-    title: 'RASTH',
-    kind: 'Full-stack platform',
-    summary: 'Medical records with role-based portals and real-time chat.',
-    detail:
-      'Role-based portals and real-time chat over a RESTful Express API, backed by PostgreSQL and deployed on AWS EC2 with RDS.',
-    metric: { value: 'EC2', label: '+ RDS deployment' },
-    stack: ['Node.js', 'Express', 'PostgreSQL', 'AWS'],
-    href: 'https://github.com/sobanali256/RASTH-Db-project',
   },
 ];
 

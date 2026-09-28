@@ -24,12 +24,13 @@ A modern, responsive personal portfolio website built with React, TypeScript, an
 
 ## ✨ Features
 
+- **Editorial "research paper" design** — numbered sections, captioned figures, serif display type on warm paper
+- **Live attention figure** — the hero is an animated causal self-attention heatmap over the tagline
+- **Light & dark themes** — follows the OS preference, with a manual toggle
+- **Smooth animations** — Motion scroll reveals and Lenis smooth scrolling, both respecting reduced-motion
+- **Working contact form** — client-side validation, sent via Formspree
 - **Responsive design** — fully optimized for desktop, tablet, and mobile
-- **Smooth animations** — powered by the Motion library (Framer Motion)
-- **AI-powered interactions** — integrated with the Gemini API
-- **Fast performance** — built on Vite with TypeScript for type safety
-- **Clean UI** — styled with Tailwind CSS v4 and Lucide React icons
-- **Deployed on Vercel** — with custom routing via `vercel.json`
+- **Deployed on Vercel** — with Vercel Analytics and custom routing via `vercel.json`
 
 ---
 
@@ -41,10 +42,11 @@ A modern, responsive personal portfolio website built with React, TypeScript, an
 | Language | TypeScript 5.8 |
 | Build Tool | Vite 6 |
 | Styling | Tailwind CSS 4 |
-| Animations | Motion (Framer Motion) |
+| Animations | Motion |
+| Smooth Scroll | Lenis |
 | Icons | Lucide React |
-| AI Integration | Google Gemini API |
-| Deployment | Vercel |
+| Contact Form | Formspree |
+| Deployment | Vercel + Vercel Analytics |
 
 ---
 
@@ -52,14 +54,19 @@ A modern, responsive personal portfolio website built with React, TypeScript, an
 
 ```
 Portfolio-Website/
-├── src/               # Source files (components, pages, assets)
-├── index.html         # Entry HTML
+├── src/
+│   ├── App.tsx        # Page sections
+│   ├── components/    # Navbar, AttentionFigure, ProjectIndex, ContactForm, …
+│   ├── data/          # content.ts (all site copy) and chapters.ts (section ids)
+│   ├── hooks/         # useTheme, useActiveSection
+│   └── index.css      # Tailwind v4 theme tokens (light & dark)
+├── public/            # Favicon and static files
+├── index.html         # Entry HTML, fonts, pre-paint theme script
 ├── package.json       # Dependencies & scripts
 ├── vite.config.ts     # Vite configuration
 ├── tsconfig.json      # TypeScript configuration
 ├── vercel.json        # Vercel deployment config
 ├── metadata.json      # Portfolio metadata
-├── .env.example       # Environment variable template
 └── .gitignore
 ```
 
@@ -109,19 +116,20 @@ This project is deployed via [Vercel](https://vercel.com). To deploy your own fo
 
 1. Push the repository to GitHub
 2. Import the repo on [vercel.com](https://vercel.com)
-3. Add `GEMINI_API_KEY` as an environment variable in the Vercel project settings
-4. Vercel will automatically build and deploy on every push to `main`
+3. Vercel will automatically build and deploy on every push to `main` — no environment variables are needed
+
+To change the site's content (projects, experience, stack), edit `src/data/content.ts`.
 
 ---
 
 ## 👤 About
 
-**Soban Ali** — Computer Science student at FAST-NUCES (graduating 2027), specializing in AI/ML. This portfolio highlights research and projects in machine learning, cybersecurity, and full-stack development, including:
+**Soban Ali** — Computer Science student at FAST-NUCES (graduating 2027), specializing in AI/ML. This portfolio highlights research and projects in machine learning, LLM applications, and web development, including:
 
 - 🔬 **Malware Detection** — VGG-16 on the Malimg dataset, achieving 99.10% test accuracy
-- 💬 **Tweet Sentiment Analysis** — Naive Bayes & Logistic Regression from scratch on Sentiment140
+- 📺 **AniTrack** — Installable anime-journal PWA on Firebase with AniList & Jikan data ([live](https://anitrack-a3031.web.app))
 - 🤝 **WarRoom** — Multi-agent AI contract negotiation system
-- 🏥 **RASTH** — Healthcare platform built on Node.js & AWS
+- 🧮 **ML From Scratch** — Naive Bayes, logistic regression & neural nets in raw NumPy
 - 📄 **Resume Analyzer** — AI-powered resume feedback tool
 
 ---

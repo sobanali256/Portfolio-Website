@@ -78,15 +78,23 @@ export default function ProjectIndex({ projects }: { projects: Project[] }) {
                           </li>
                         ))}
                       </ul>
-                      <a
-                        href={p.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="group/link inline-flex items-center gap-1 text-[14px] font-medium text-ink"
-                      >
-                        <span className="link-draw">Source on GitHub</span>
-                        <ArrowUpRight size={15} className="transition-transform duration-300 group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5" />
-                      </a>
+                      <div className="flex flex-wrap gap-x-6 gap-y-2">
+                        {[
+                          ...(p.live ? [{ href: p.live, label: 'Live app' }] : []),
+                          ...(p.href ? [{ href: p.href, label: 'Source on GitHub' }] : []),
+                        ].map((link) => (
+                          <a
+                            key={link.href}
+                            href={link.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="group/link inline-flex items-center gap-1 text-[14px] font-medium text-ink"
+                          >
+                            <span className="link-draw">{link.label}</span>
+                            <ArrowUpRight size={15} className="transition-transform duration-300 group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5" />
+                          </a>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>
