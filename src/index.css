@@ -124,6 +124,12 @@
   }
 }
 
+/* Fig. 1's tab hairline; its animationend advances the figure. */
+@keyframes fig-progress {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;

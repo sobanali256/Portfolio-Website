@@ -25,7 +25,7 @@ A modern, responsive personal portfolio website built with React, TypeScript, an
 ## ✨ Features
 
 - **Editorial "research paper" design** — numbered sections, captioned figures, serif display type on warm paper
-- **Live pipeline figure** — the hero is an animated schematic of a hybrid RAG pipeline
+- **Live pipeline figure** — the hero alternates between animated schematics of a hybrid RAG pipeline and an AI end-to-end testing loop
 - **Light & dark themes** — follows the OS preference, with a manual toggle
 - **Smooth animations** — Motion scroll reveals and Lenis smooth scrolling, both respecting reduced-motion
 - **Working contact form** — client-side validation, sent via Formspree
