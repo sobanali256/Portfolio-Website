@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Moon, Sun } from 'lucide-react';
+import { ArrowUpRight, Moon, Sun } from 'lucide-react';
 import { useLenis } from 'lenis/react';
 import { chapters, scrollToChapter } from '../data/chapters';
 import { profile } from '../data/content';
 import useActiveSection from '../hooks/useActiveSection';
 import useTheme from '../hooks/useTheme';
+import { useOpenResume } from './resumeContext';
 
 const chapterIds = chapters.map((c) => c.id);
 
@@ -15,6 +16,7 @@ export default function Navbar() {
   const activeSection = useActiveSection(chapterIds);
   const lenis = useLenis();
   const { theme, toggle } = useTheme();
+  const openResume = useOpenResume();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -91,6 +93,17 @@ export default function Navbar() {
               })}
             </ul>
 
+            <a
+              href={profile.resume}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={openResume}
+              className="group hidden items-center gap-1 border-l border-rule py-1 pl-4 pr-2 text-[13.5px] text-muted transition-colors duration-200 hover:text-ink md:flex"
+            >
+              Résumé
+              <ArrowUpRight size={14} className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+            </a>
+
             <button
               type="button"
               onClick={toggle}
@@ -149,6 +162,18 @@ export default function Navbar() {
             </ul>
             <div className="mt-10 space-y-1 text-sm">
               <a href={`mailto:${profile.email}`} className="block text-ink">{profile.email}</a>
+              <a
+                href={profile.resume}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => {
+                  openResume(e);
+                  setIsOpen(false);
+                }}
+                className="flex items-center gap-1 text-ink"
+              >
+                Résumé (PDF) <ArrowUpRight size={14} />
+              </a>
               <p className="text-muted">{profile.availability}</p>
             </div>
           </motion.div>

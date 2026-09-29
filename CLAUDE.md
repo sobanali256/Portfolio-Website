@@ -38,6 +38,7 @@ Single-page React 19 + TypeScript portfolio built with Vite 6. The entire site i
 
 - The `@` import alias maps to the project root (configured in both `vite.config.ts` and `tsconfig.json` `paths`).
 - Image/asset imports rely on Vite ambient types declared in `src/vite-env.d.ts`. The portrait is `src/assets/portrait.webp` (640px wide, ~44 KB) — keep images WebP and sized for their display width.
+- The résumé is `public/Soban-Ali-Resume.pdf`, compiled from `resume/Soban_Ali_Resume.tex` (Jake's template; compiles under pdfLaTeX or XeTeX/Tectonic) and linked via `profile.resume` from the Navbar, mobile menu and Contact list. Those links open `ResumeViewer` (a native `<dialog>` from `ResumeProvider`, opened with `useOpenResume()` from `resumeContext.ts`, which lives in its own file so Fast Refresh of the viewer doesn't orphan the context; without a provider the links fall back to the plain PDF); it embeds the PDF on desktop and shows `src/assets/resume-preview.webp` on touch devices, which can't embed PDFs. After recompiling the PDF, re-render that WebP (150 dpi, grayscale). Keep the résumé's facts in sync with `content.ts`, and keep it one page.
 - `vite.config.ts` toggles HMR via the `DISABLE_HMR` env var (used by AI Studio to prevent flicker during agent edits) — leave the `hmr` line alone.
 
 ## Deployment

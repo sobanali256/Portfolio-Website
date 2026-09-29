@@ -3,12 +3,14 @@
 
 export const profile = {
   name: 'Soban Ali',
-  role: 'AI Engineer',
+  role: 'AI Full-Stack Engineer',
   location: 'Lahore, Pakistan',
   timeZone: 'Asia/Karachi',
   email: 'sobanali256@gmail.com',
   github: 'https://github.com/sobanali256',
   linkedin: 'https://linkedin.com/in/sobanali256',
+  /** Served from `public/`; the source is `resume/Soban_Ali_Resume.tex`. */
+  resume: '/Soban-Ali-Resume.pdf',
   availability: 'Open to AI roles from June 2027',
 };
 
@@ -32,7 +34,7 @@ export const projects: Project[] = [
     kind: 'Research replication',
     summary: 'Rebuilt a 2025 paper, then beat its benchmark.',
     detail:
-      'Replicated a published malware-classification pipeline end to end, then pushed past it: VGG-16 fine-tuned on binaries rendered through a grayscale-to-JET image transform reached 99.10% accuracy on the Malimg dataset.',
+      'Replicated Younas et al. (2025) end to end, then pushed past it: binaries rendered as images, compressed by SVD low-rank reconstruction (k = 60) and JET-coloured to three channels, feed a fine-tuned VGG-16 that reaches 99.10% accuracy across 25 malware families on Malimg, beating the paper’s 97.98%.',
     metric: { value: '99.10%', label: 'accuracy · Malimg' },
     stack: ['TensorFlow', 'Keras', 'OpenCV', 'Python'],
     href: 'https://github.com/sobanali256/malware-detection-research-replication',
@@ -43,20 +45,20 @@ export const projects: Project[] = [
     kind: 'Web app · PWA',
     summary: 'A personal anime journal, installable and live.',
     detail:
-      'Track what you’re watching across five lists, see what airs today, browse and get genre-based recommendations from AniList and Jikan data, and chat with anime-character companions. Firebase handles auth and Firestore sync, with a guest mode that works before sign-up.',
+      'Track what you’re watching across five lists and see what airs today, with AniList and Jikan data. A content-based engine recommends from your watch history, and an AI chat companion talks in several personalities. Firebase handles auth, Firestore sync and push notifications through Cloud Functions, with a guest mode that works before sign-up.',
     metric: { value: 'Live', label: 'installable PWA' },
-    stack: ['React', 'Firebase', 'AniList GraphQL', 'Jikan API'],
+    stack: ['React', 'Vite', 'Firebase', 'AniList API', 'Jikan API'],
     live: 'https://anitrack-a3031.web.app',
   },
   {
     id: 'warroom',
     title: 'WarRoom',
     kind: 'Multi-agent system',
-    summary: 'Three AI agents negotiate contracts so humans don’t have to.',
+    summary: 'Three AI agents debate a contract to surface its blind spots.',
     detail:
-      'Three CrewAI agents argue a contract’s terms to agreement, with zero-touch role detection — at 75% lower cost than a GPT-4o equivalent.',
-    metric: { value: '−75%', label: 'cost vs. GPT-4o' },
-    stack: ['CrewAI', 'OpenAI API', 'Python', 'React'],
+      'A Shark, a Shield and a Mediator — three CrewAI agents — debate a contract in sequence to surface its blind spots, with zero-touch role detection. The prompts are tuned so the debate holds up on GPT-4o-mini, at a fraction of GPT-4o’s cost.',
+    metric: { value: '3', label: 'adversarial agents' },
+    stack: ['CrewAI', 'GPT-4o-mini', 'Python', 'React'],
     href: 'https://github.com/sobanali256/War-Room',
   },
   {
@@ -122,7 +124,7 @@ export const experiences: Experience[] = [
         name: 'RAG proposal generator',
         period: 'Apr — May 2026',
         points: [
-          'Built the retrieval core: hybrid search fusing BM25 with all-MiniLM embeddings in ChromaDB, parent-chunk context, claim-level evidence and client-confidentiality guardrails, with Claude writing. Shelved mid-build when the team moved to the skills approach.',
+          'Built the retrieval core: hybrid search fusing BM25 with all-MiniLM embeddings in ChromaDB, parent-child chunking with top-5 reranking, claim-level evidence and client-confidentiality guardrails, with Claude writing, and fixed a silent schema bug that had failed query expansion on 100% of requests. Shelved mid-build when the team moved to the skills approach.',
         ],
       },
     ],
@@ -131,7 +133,7 @@ export const experiences: Experience[] = [
   {
     period: 'Apr 2026',
     role: '117th of 1,980 teams',
-    org: 'Reply Code Challenge',
+    org: 'Reply AI Agent Challenge',
     kind: 'Competition',
     points: [
       'Multi-agent fraud detection: a LangChain agent pipeline for spotting fraudulent patterns, with LangFuse tracking cost and usage across runs.',
@@ -144,16 +146,17 @@ export const experiences: Experience[] = [
     org: 'FAST NUCES',
     kind: 'Education',
     points: [
-      'CGPA 3.70. Coursework in applied ML, deep learning, AI, cloud computing, databases, algorithms and software architecture.',
+      'CGPA 3.70, on the Dean’s Honor List every semester from Fall 2023 to Fall 2025. Coursework in applied ML, deep learning, AI, cloud computing, databases, algorithms and software architecture.',
     ],
     stack: [],
   },
 ];
 
+// Mirrors the Skills section of the résumé (resume/Soban_Ali_Resume.tex).
 export const stack: { group: string; items: string[] }[] = [
-  { group: 'Generative AI', items: ['LangGraph', 'LangChain', 'CrewAI', 'Amazon Bedrock', 'Claude API', 'OpenAI API', 'Hugging Face', 'LangFuse'] },
-  { group: 'Retrieval', items: ['pgvector', 'ChromaDB', 'all-MiniLM', 'BM25', 'Hybrid search'] },
-  { group: 'Machine learning', items: ['PyTorch', 'TensorFlow', 'Keras', 'scikit-learn', 'OpenCV'] },
-  { group: 'Data', items: ['NumPy', 'Pandas', 'Matplotlib', 'NLTK'] },
-  { group: 'Engineering', items: ['Python', 'Node.js', 'PostgreSQL', 'Docker', 'AWS'] },
+  { group: 'Generative AI', items: ['LangGraph', 'LangChain', 'CrewAI', 'Claude API', 'OpenAI API', 'LangSmith', 'LangFuse', 'RAG', 'Multi-agent systems'] },
+  { group: 'Machine learning', items: ['PyTorch', 'TensorFlow', 'Keras', 'scikit-learn', 'Hugging Face', 'OpenCV', 'Transfer learning', 'CNNs'] },
+  { group: 'Languages & tools', items: ['Python', 'TypeScript', 'C++', 'SQL', 'Git', 'Docker'] },
+  { group: 'Databases', items: ['PostgreSQL', 'pgvector', 'ChromaDB', 'MySQL'] },
+  { group: 'Backend & cloud', items: ['FastAPI', 'Node.js', 'React', 'Firebase', 'Amazon Bedrock', 'AWS (EC2, RDS, ECS, S3, SQS)', 'Playwright'] },
 ];

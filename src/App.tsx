@@ -10,6 +10,8 @@ import ContactForm from './components/ContactForm';
 import PipelineFigure from './components/PipelineFigure';
 import LocalTime from './components/LocalTime';
 import Reveal from './components/Reveal';
+import { ResumeProvider } from './components/ResumeViewer';
+import { useOpenResume } from './components/resumeContext';
 import { scrollToChapter } from './data/chapters';
 import { experiences, profile, projects, stack } from './data/content';
 import portrait from './assets/portrait.webp';
@@ -57,6 +59,36 @@ function CopyEmail({ className = '' }: { className?: string }) {
   );
 }
 
+function ContactLinks() {
+  const openResume = useOpenResume();
+  const links = [
+    { name: 'LinkedIn', href: profile.linkedin, handle: 'in/sobanali256' },
+    { name: 'GitHub', href: profile.github, handle: 'sobanali256' },
+    { name: 'Résumé', href: profile.resume, handle: 'PDF, one page', onClick: openResume },
+  ];
+  return (
+    <ul className="mt-10 border-t border-rule">
+      {links.map(({ name, href, handle, onClick }) => (
+        <li key={name} className="border-b border-rule">
+          <a
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={onClick}
+            className="group flex items-center justify-between py-4 text-[15px]"
+          >
+            <span className="text-ink">{name}</span>
+            <span className="flex items-center gap-2 text-muted transition-colors group-hover:text-ink">
+              {handle}
+              <ArrowUpRight size={15} className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 export default function App() {
   const lenis = useLenis();
   const go = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
@@ -66,6 +98,7 @@ export default function App() {
 
   return (
     <MotionConfig reducedMotion="user">
+      <ResumeProvider>
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-full focus:bg-ink focus:px-4 focus:py-2 focus:text-paper"
@@ -100,18 +133,22 @@ export default function App() {
 
             <div className="mt-12 grid gap-16 md:mt-16 lg:grid-cols-12 lg:gap-10">
               <div className="lg:col-span-7">
-                <h1 className="font-display text-[clamp(4.5rem,14vw,11.5rem)] leading-[0.86] tracking-[-0.025em] text-ink">
+                <h1 className="whitespace-nowrap font-display text-[clamp(4rem,11vw,8.5rem)] leading-[0.95] tracking-[-0.025em] text-ink">
                   {['Soban', 'Ali'].map((word, i) => (
-                    <span key={word} className="block overflow-hidden pb-[0.06em]">
-                      <motion.span
-                        className={`block ${i === 1 ? 'italic pl-[0.55em]' : ''}`}
-                        initial={{ y: '105%' }}
-                        animate={{ y: 0 }}
-                        transition={{ duration: 1.1, delay: 0.15 + i * 0.12, ease: EASE }}
-                      >
-                        {word}
-                      </motion.span>
-                    </span>
+                    <React.Fragment key={word}>
+                      {i > 0 && ' '}
+                      {/* The italic word gets right padding so the mask doesn't clip its overhang. */}
+                      <span className={`inline-block overflow-hidden pb-[0.06em] align-bottom ${i === 1 ? 'pr-[0.08em]' : ''}`}>
+                        <motion.span
+                          className={`inline-block ${i === 1 ? 'italic' : ''}`}
+                          initial={{ y: '105%' }}
+                          animate={{ y: 0 }}
+                          transition={{ duration: 1.1, delay: 0.15 + i * 0.12, ease: EASE }}
+                        >
+                          {word}
+                        </motion.span>
+                      </span>
+                    </React.Fragment>
                   ))}
                 </h1>
 
@@ -167,7 +204,7 @@ export default function App() {
             >
               {[
                 ['Now', 'AI Intern at Ledelsea — building an AI platform that writes and runs end-to-end tests.'],
-                ['Recently', 'Ranked 117th of 1,980 teams worldwide in the Reply Code Challenge.'],
+                ['Recently', 'Ranked 117th of 1,980 teams worldwide in the Reply AI Agent Challenge.'],
                 ['Studying', 'B.S. Computer Science at FAST NUCES, CGPA 3.70, graduating June 2027.'],
               ].map(([k, v], i) => (
                 <div key={k} className={`py-5 sm:pr-8 ${i > 0 ? 'border-t border-rule sm:border-l sm:border-t-0 sm:pl-8' : ''}`}>
@@ -364,27 +401,7 @@ export default function App() {
                   <CopyEmail />
                 </div>
 
-                <ul className="mt-10 border-t border-rule">
-                  {[
-                    ['LinkedIn', profile.linkedin, 'in/sobanali256'],
-                    ['GitHub', profile.github, 'sobanali256'],
-                  ].map(([name, href, handle]) => (
-                    <li key={name} className="border-b border-rule">
-                      <a
-                        href={href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="group flex items-center justify-between py-4 text-[15px]"
-                      >
-                        <span className="text-ink">{name}</span>
-                        <span className="flex items-center gap-2 text-muted transition-colors group-hover:text-ink">
-                          {handle}
-                          <ArrowUpRight size={15} className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-                        </span>
-                      </a>
-                    </li>
-                  ))}
-                </ul>
+                <ContactLinks />
                 <p className="mt-6 text-[14px] text-muted">
                   It’s <LocalTime timeZone={profile.timeZone} /> in Lahore right now.
                 </p>
@@ -418,6 +435,7 @@ export default function App() {
           Soban <span className="italic">Ali</span>
         </p>
       </footer>
+      </ResumeProvider>
       <Analytics />
     </MotionConfig>
   );
