@@ -1,0 +1,181 @@
+%-------------------------
+% Jake's Resume Template
+% Adapted for Soban Ali
+%-------------------------
+
+\documentclass[letterpaper,10pt]{article}
+
+\usepackage{latexsym}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage{marvosym}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{verbatim}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage[english]{babel}
+\usepackage{tabularx}
+\usepackage{iftex}
+\ifPDFTeX\input{glyphtounicode}\fi
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\addtolength{\oddsidemargin}{-0.5in}
+\addtolength{\evensidemargin}{-0.5in}
+\addtolength{\textwidth}{1in}
+\addtolength{\topmargin}{-.5in}
+\addtolength{\textheight}{1.0in}
+
+\urlstyle{same}
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+\titleformat{\section}{
+  \vspace{-4pt}\scshape\raggedright\large
+}{}{0em}{}[\color{black}\titlerule \vspace{-5pt}]
+
+\ifPDFTeX\pdfgentounicode=1\fi
+\hypersetup{pdftitle={Soban Ali --- Resume}, pdfauthor={Soban Ali}}
+
+%--- Custom Commands ---%
+
+\newcommand{\resumeItem}[1]{
+  \item\small{{#1 \vspace{-2pt}}}
+}
+
+\newcommand{\resumeSubheading}[4]{
+  \vspace{-2pt}\item
+    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+      \textbf{#1} & #2 \\
+      \textit{\small#3} & \textit{\small #4} \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeProjectHeading}[2]{
+  \item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+      \small#1 & #2 \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\renewcommand\labelitemii{$\vcenter{\hbox{\tiny$\bullet$}}$}
+
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.15in, label={}]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{\begin{itemize}}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-5pt}}
+
+%==============================
+\begin{document}
+
+%--- Header ---%
+\begin{center}
+  {\Huge \scshape Soban Ali} \\ \vspace{3pt}
+  {\normalsize \textit{AI Full-Stack Engineer --- Agentic Systems, RAG \& Full-Stack Apps}} \\ \vspace{3pt}
+  \small \href{mailto:sobanali256@gmail.com}{sobanali256@gmail.com} $|$
+  \href{https://linkedin.com/in/sobanali256}{linkedin.com/in/sobanali256} $|$
+  \href{https://github.com/sobanali256}{github.com/sobanali256} $|$
+  \href{https://sobanali.vercel.app}{sobanali.vercel.app}
+\end{center}
+
+%--- Education ---%
+\section{Education}
+\resumeSubHeadingListStart
+  \resumeSubheading
+    {FAST NUCES}{Lahore, PK}
+    {Bachelor of Computer Science \textnormal{--- CGPA: 3.70}}{Expected 2027}
+  \resumeSubheading
+    {Lahore Grammar School}{Lahore, PK}
+    {A-Level: 3A* 1A \textnormal{---} O-Level: 5A* 3A 1B}{2018 -- 2023}
+\resumeSubHeadingListEnd
+
+%--- Experience ---%
+\section{Experience}
+\resumeSubHeadingListStart
+  \resumeSubheading
+    {Ledelsea}{Remote}
+    {AI Intern --- RAG Pipelines \& Agentic Testing Platforms}{Apr 2026 -- Present}
+    \resumeItemListStart
+      \resumeItem{Building an AI platform that writes end-to-end tests from source code: tree-sitter indexes Java and TypeScript repos into pgvector, and a LangGraph pipeline on AWS Bedrock maps business processes into test scenarios.}
+      \resumeItem{Human-approved cases become Playwright scripts that are statically checked and dry-run before running live; failures are diagnosed from traces, console logs and screenshots, with evidence in S3 and results on a React dashboard.}
+      \resumeItem{Built eight Claude skills that write complete RFP responses in a 15-phase workflow, drafting each section in its own subagent from 29 indexed past proposals; used on five real public-sector RFPs.}
+      \resumeItem{Wrote Python quality gates (depth, voice, style, buyer-table fidelity) that block the Word build until every check passes.}
+      \resumeItem{Built hybrid BM25 + embedding retrieval in ChromaDB with parent-child chunking and top-5 reranking; fixed a silent schema bug that failed query expansion on 100\% of requests.}
+    \resumeItemListEnd
+\resumeSubHeadingListEnd
+
+%--- Skills ---%
+\section{Skills}
+\resumeSubHeadingListStart
+  \item \small{
+    \textbf{Generative AI:} LangGraph, LangChain, CrewAI, Claude API, OpenAI API, LangSmith, LangFuse, RAG, Multi-Agent Systems \\
+    \textbf{ML / DL:} PyTorch, TensorFlow, Keras, scikit-learn, Hugging Face, OpenCV, Transfer Learning, CNNs \\
+    \textbf{Languages / Tools:} Python, TypeScript, C++, SQL, Git, Docker \\
+    \textbf{Databases:} PostgreSQL, pgvector, ChromaDB, MySQL \\
+    \textbf{Backend / Cloud:} FastAPI, Node.js, React, Firebase, AWS (EC2, RDS, ECS Fargate, Bedrock, S3, SQS), Playwright
+  }
+\resumeSubHeadingListEnd
+
+%--- Projects ---%
+\section{Projects}
+\resumeSubHeadingListStart
+
+  \resumeProjectHeading
+    {\textbf{Malware Detection} -- CNN Transfer Learning Research Replication $|$ \emph{TensorFlow, Keras, OpenCV}}
+    {\href{https://github.com/sobanali256/malware-detection-research-replication}{GitHub}}
+    \resumeItemListStart
+      \resumeItem{Replicated the Younas et al. (2025) malware-classification pipeline across 25 families on the Malimg dataset.}
+      \resumeItem{Fine-tuned VGG-16 to 99.10\% test accuracy, beating the paper's 97.98\% benchmark.}
+      \resumeItem{Implemented SVD decomposition, low-rank reconstruction (k=60), and JET colormap for 3-channel conversion.}
+    \resumeItemListEnd
+
+  \resumeProjectHeading
+    {\textbf{AniTrack} -- Anime Tracking PWA $|$ \emph{React, Vite, Firebase, Jikan API}}
+    {\href{https://anitrack-a3031.web.app}{Live App}}
+    \resumeItemListStart
+      \resumeItem{Built a PWA integrating the AniList API for anime tracking and push notifications via Cloud Functions.}
+      \resumeItem{Developed a content-based recommendation engine surfacing personalized suggestions from watch history.}
+      \resumeItem{Designed an AI chat companion with multiple personalities, plus a guest mode usable before sign-up.}
+    \resumeItemListEnd
+
+  \resumeProjectHeading
+    {\textbf{WarRoom} -- Autonomous Multi-Agent Contract Negotiation $|$ \emph{CrewAI, GPT-4o-mini}}
+    {\href{https://github.com/sobanali256/War-Room}{GitHub}}
+    \resumeItemListStart
+      \resumeItem{Engineered a multi-agent adversarial system using CrewAI to surface blind spots in contracts.}
+      \resumeItem{Orchestrated a sequential debate between three agents (Shark, Shield, Mediator) with zero-touch role detection.}
+      \resumeItem{Tuned prompts so the debate holds up on GPT-4o-mini, at a fraction of GPT-4o's cost.}
+    \resumeItemListEnd
+
+\resumeSubHeadingListEnd
+
+%--- Certifications ---%
+\section{Certifications}
+\resumeSubHeadingListStart
+  \resumeProjectHeading
+    {Generative AI Application Developer, NCEAC-HEC Training \textnormal{(Top Performer)}}{Dec 2025}
+  \resumeProjectHeading
+    {Advanced Learning Algorithms, Coursera}{Jun 2025}
+  \resumeProjectHeading
+    {Supervised Machine Learning: Regression and Classification, Coursera}{Mar 2025}
+\resumeSubHeadingListEnd
+
+%--- Achievements ---%
+\section{Achievements}
+\resumeSubHeadingListStart
+    \resumeProjectHeading
+    {Ranked 117th out of 1,980 teams globally, Reply AI Agent Challenge 2026 \textnormal{(multi-agent fraud detection system)}}{}
+  \resumeProjectHeading
+    {Dean's Honor List, FAST NUCES \textnormal{--- Fall 2023, Spring 2024, Fall 2024, Spring 2025, Fall 2025}}{}
+
+\resumeSubHeadingListEnd
+
+%==============================
+\end{document}
+%==============================
