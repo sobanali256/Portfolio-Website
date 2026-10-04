@@ -94,6 +94,13 @@ export default function Navbar() {
             </ul>
 
             <a
+              href="/blog"
+              className="hidden border-l border-rule px-4 py-1 text-[13.5px] text-muted transition-colors duration-200 hover:text-ink md:block"
+            >
+              Writing
+            </a>
+
+            <a
               href={profile.resume}
               target="_blank"
               rel="noopener noreferrer"
@@ -159,6 +166,17 @@ export default function Navbar() {
                   </a>
                 </motion.li>
               ))}
+              <motion.li
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.04 * chapters.length, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                className="border-b border-rule"
+              >
+                <a href="/blog" className="flex items-baseline justify-between py-4">
+                  <span className="font-display text-[2.4rem] italic leading-none text-ink">Writing</span>
+                  <ArrowUpRight size={18} className="text-accent" />
+                </a>
+              </motion.li>
             </ul>
             <div className="mt-10 space-y-1 text-sm">
               <a href={`mailto:${profile.email}`} className="block text-ink">{profile.email}</a>

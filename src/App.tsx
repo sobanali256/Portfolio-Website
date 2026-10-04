@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { MotionConfig, motion } from 'motion/react';
 import { Analytics } from '@vercel/analytics/react';
 import { ArrowDown, ArrowUpRight, ArrowUp, Check, Copy } from 'lucide-react';
@@ -64,6 +64,7 @@ function ContactLinks() {
   const links = [
     { name: 'LinkedIn', href: profile.linkedin, handle: 'in/sobanali256' },
     { name: 'GitHub', href: profile.github, handle: 'sobanali256' },
+    { name: 'X', href: profile.x, handle: '@sobanali256' },
     { name: 'Résumé', href: profile.resume, handle: 'PDF, one page', onClick: openResume },
   ];
   return (
@@ -95,6 +96,14 @@ export default function App() {
     e.preventDefault();
     scrollToChapter(id, lenis);
   };
+
+  // Arriving via /#section (e.g. /#contact from a blog page): land on that section
+  // once Lenis is ready, rather than relying on the browser's early jump.
+  useEffect(() => {
+    const id = decodeURIComponent(window.location.hash.slice(1));
+    if (!id || !lenis) return;
+    requestAnimationFrame(() => scrollToChapter(id, lenis));
+  }, [lenis]);
 
   return (
     <MotionConfig reducedMotion="user">

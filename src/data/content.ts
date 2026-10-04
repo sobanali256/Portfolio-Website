@@ -9,6 +9,7 @@ export const profile = {
   email: 'sobanali256@gmail.com',
   github: 'https://github.com/sobanali256',
   linkedin: 'https://linkedin.com/in/sobanali256',
+  x: 'https://x.com/sobanali256',
   /** Served from `public/`; the source is `resume/Soban_Ali_Resume.tex`. */
   resume: '/Soban-Ali-Resume.pdf',
   availability: 'Open to AI roles from June 2027',
