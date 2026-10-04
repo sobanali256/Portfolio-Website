@@ -7,7 +7,7 @@ import { profile } from '../data/content';
 import { BLOG_HREF, BlogShell, CONTAINER, EASE, Em, setMeta } from './BlogLayout';
 import Markdown from './Markdown';
 import TableOfContents, { useActiveHeading, useHeadings } from './TableOfContents';
-import { formatDate, getPost, postHref, posts, type Post } from './posts';
+import { formatDate, getPost, postHref, postPageDescription, postPageTitle, posts, type Post } from './posts';
 
 const tagHref = (tag: string) => `${BLOG_HREF}?tag=${encodeURIComponent(tag)}`;
 const X_HANDLE = profile.x.replace(/^https?:\/\/(www\.)?x\.com\//, '');
@@ -226,11 +226,11 @@ export default function BlogPost({ slug }: { slug: string }) {
       document.title = `Not found — ${profile.name}`;
       return;
     }
-    const title = `${post.title} — ${profile.name}`;
+    const title = postPageTitle(post);
     document.title = title;
-    setMeta('meta[name="description"]', post.description);
+    setMeta('meta[name="description"]', postPageDescription(post));
     setMeta('meta[property="og:title"]', title);
-    setMeta('meta[property="og:description"]', post.description);
+    setMeta('meta[property="og:description"]', postPageDescription(post));
     setMeta('meta[property="og:type"]', 'article');
     let cancelled = false;
     post.loadBody().then((text) => {

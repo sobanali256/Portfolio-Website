@@ -73,6 +73,7 @@ const page = (body) => `<!doctype html>
   figure .frame { border: 1px solid var(--rule-strong); background: var(--paper-2); overflow: hidden; }
   figure img, figure svg { display: block; width: 100%; height: 100%; object-fit: cover; }
   figcaption { font-size: 13px; }
+  .cta { color: var(--accent); font-size: 17px; letter-spacing: 0.12em; }
 </style></head><body>${body}</body></html>`;
 
 const cards = {
@@ -89,7 +90,7 @@ const cards = {
         <figcaption class="label">Plate I — ${esc(profile.name)}</figcaption>
       </figure>
     </main>
-    <div class="bar bottom label"><span>Portfolio · Writing · Résumé</span><span>${esc(profile.availability)}</span></div>`),
+    <div class="bar bottom label"><span class="cta">View work, writing &amp; résumé →</span><span>${esc(profile.availability)}</span></div>`),
 
   blog: page(`
     <div class="bar top label"><span><b>§</b>&nbsp; ${esc(host)} / blog</span><span>${posts.length} ${posts.length === 1 ? 'essay' : 'essays'}</span></div>
@@ -99,7 +100,7 @@ const cards = {
         <p style="margin-top:28px">${esc(BLOG_DESCRIPTION)}</p>
       </div>
     </main>
-    <div class="bar bottom label"><span>${esc(profile.name)} — ${esc(profile.role)}</span><span>Long-form notes</span></div>`),
+    <div class="bar bottom label"><span>${esc(profile.name)} — ${esc(profile.role)}</span><span class="cta">Read the essays →</span></div>`),
 };
 
 for (const post of posts) {
@@ -117,7 +118,7 @@ for (const post of posts) {
         <figcaption class="label">Plate I</figcaption>
       </figure>
     </main>
-    <div class="bar bottom label"><span>${esc(profile.name)} — ${esc(profile.role)}</span><span>Writing</span></div>`);
+    <div class="bar bottom label"><span>${esc(profile.name)} — ${esc(profile.role)}</span><span class="cta">Read the essay →</span></div>`);
 }
 
 mkdirSync(outDir, { recursive: true });

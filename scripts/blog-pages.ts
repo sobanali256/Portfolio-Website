@@ -65,7 +65,7 @@ export function blogPages(): Plugin {
       } finally {
         await server.close();
       }
-      const [{ profile }, { posts, BLOG_DESCRIPTION }, { SITE_URL, ogImage }] = mods;
+      const [{ profile }, { posts, BLOG_DESCRIPTION, postPageTitle, postPageDescription }, { SITE_URL, ogImage }] = mods;
 
       const template = readFileSync(path.join(outDir, 'index.html'), 'utf8');
       writeFileSync(path.join(outDir, '404.html'), template);
@@ -84,8 +84,8 @@ export function blogPages(): Plugin {
       });
       for (const post of posts) {
         write(`blog/${post.slug}`, {
-          title: `${post.title} — ${profile.name}`,
-          description: post.description,
+          title: postPageTitle(post),
+          description: postPageDescription(post),
           url: `${SITE_URL}/blog/${post.slug}`,
           image: ogImage(post.slug),
           type: 'article',
