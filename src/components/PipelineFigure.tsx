@@ -114,7 +114,7 @@ const DIAGRAMS: Diagram[] = [
     tab: 'Testing',
     title: 'Anatomy of an AI end-to-end testing loop.',
     ariaLabel:
-      'Diagram of an AI end-to-end testing loop: an application’s code and requirements are indexed; an LLM writes test cases; a person approves them; each approved case runs as a Playwright script in a real browser, opening the page, filling the form and asserting the result. One case passes and keeps its evidence; the other fails, is triaged, and a script fault is repaired and rerun.',
+      'Diagram of an AI end-to-end testing loop: an application’s code and requirements are indexed; an LLM writes test cases; a person approves them; each approved case runs as a WebdriverIO script in a real browser, opening the page, filling the form and asserting the result. One case passes and keeps its evidence; the other fails, is triaged, and a script fault is repaired and rerun.',
     idle: 'Two test cases, one loop: from code to a verdict, and back when a script breaks.',
     stages: [
       { id: 'source', n: '01', label: 'Source', name: 'Code + requirements', x: 100, y: 0, w: 180, h: 52,
@@ -123,10 +123,10 @@ const DIAGRAMS: Diagram[] = [
         caption: 'An LLM reads them and writes scenarios and step-by-step test cases.' },
       { id: 'review', n: '03', label: 'Gate', name: 'Human approval', x: 105, y: 176, w: 170, h: 44, shape: 'pill',
         caption: 'A person approves each case; nothing runs unreviewed.' },
-      { id: 'run', n: '04', label: 'Run', name: 'Playwright', x: 50, y: 252, w: 280, h: 112, shape: 'window',
+      { id: 'run', n: '04', label: 'Run', name: 'WebdriverIO', x: 50, y: 252, w: 280, h: 112, shape: 'window',
         url: 'app.test/checkout',
         steps: ['Open the page', 'Fill the form', 'Assert the result'],
-        caption: 'Each approved case runs as a Playwright script in a real browser, against the live app.' },
+        caption: 'Each approved case runs as a WebdriverIO script in a real browser, against the live app.' },
       { id: 'pass', n: '05', label: 'Pass', name: 'Evidence kept', x: 20, y: 400, w: 150, h: 44, shape: 'chip', icon: 'check',
         caption: 'A pass keeps its trace and screenshots as evidence.' },
       { id: 'fail', n: '06', label: 'Fail', name: 'Triaged', x: 190, y: 400, w: 150, h: 44, shape: 'chip', icon: 'cross',
@@ -151,7 +151,7 @@ const DIAGRAMS: Diagram[] = [
     stepZones: ['step1', 'step2', 'step3'],
     afterZones: ['verdict', 'repair', 'rerun'],
     groups: {
-      step1: { n: '04', label: 'Run', caption: 'Approved cases become Playwright scripts that drive a real browser.', members: ['run'] },
+      step1: { n: '04', label: 'Run', caption: 'Approved cases become WebdriverIO scripts that drive a real browser.', members: ['run'] },
       step2: { n: '04', label: 'Run', caption: 'Each step acts on the live page the way a user would.', members: ['run'] },
       step3: { n: '04', label: 'Run', caption: 'Assertions check what the app actually did, not just that the script ran.', members: ['run'] },
       verdict: {

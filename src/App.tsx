@@ -212,7 +212,7 @@ export default function App() {
               className="mt-20 grid border-t border-rule-strong sm:grid-cols-3 md:mt-24"
             >
               {[
-                ['Now', 'AI Intern at Ledelsea — building an AI platform that writes and runs end-to-end tests.'],
+                ['Interned', 'AI Intern at Ledelsea, Apr–Oct 2026 — built an AI platform that writes and runs end-to-end tests.'],
                 ['Recently', 'Ranked 117th of 1,980 teams worldwide in the Reply AI Agent Challenge.'],
                 ['Studying', 'B.S. Computer Science at FAST NUCES, CGPA 3.70, graduating June 2027.'],
               ].map(([k, v], i) => (
@@ -345,10 +345,7 @@ export default function App() {
                     {exp.points.length > 0 && <Points points={exp.points} />}
                     {exp.projects?.map((proj, j) => (
                       <div key={proj.name} className={j > 0 || exp.points.length > 0 ? 'mt-7 border-t border-rule pt-6' : ''}>
-                        <p className="mb-3 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-                          <span className="font-display text-[1.3rem] leading-tight">{proj.name}</span>
-                          <span className="font-mono text-[11.5px] text-muted tabular">{proj.period}</span>
-                        </p>
+                        <p className="mb-3 font-display text-[1.3rem] leading-tight">{proj.name}</p>
                         <Points points={proj.points} />
                       </div>
                     ))}

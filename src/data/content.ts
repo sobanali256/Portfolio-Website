@@ -93,43 +93,41 @@ export interface Experience {
   kind: string;
   points: string[];
   /** Distinct pieces of work within one role, newest first; rendered after `points`. */
-  projects?: { name: string; period: string; points: string[] }[];
+  projects?: { name: string; points: string[] }[];
   stack: string[];
 }
 
 export const experiences: Experience[] = [
   {
-    period: 'Apr 2026 — Now',
+    period: 'Apr — Oct 2026',
     role: 'AI Intern',
     org: 'Ledelsea',
     kind: 'Internship',
     points: [],
     projects: [
       {
-        name: 'AI testing platform',
-        period: 'Aug 2026 — Now',
+        name: 'AI testing platform (proof of concept)',
         points: [
-          'Building a platform that reads an application’s source and writes its end-to-end tests: tree-sitter chunks the Java and TypeScript repos into pgvector, and a LangGraph pipeline on Amazon Bedrock maps the business process into scenarios and test cases.',
-          'A person approves each case; it then becomes a Playwright script that is statically checked and dry-run before it runs against the live app. Failures are diagnosed from the trace, console and screenshot, with evidence in S3 and results on a React dashboard.',
+          'Built a platform that reads an application’s source and writes its end-to-end tests: tree-sitter chunks the Java and TypeScript repos into pgvector, and a LangGraph pipeline on Amazon Bedrock maps the business process into scenarios and test cases.',
+          'A person approves each case; it then becomes a WebdriverIO script (migrated from Playwright) that is statically checked and dry-run before it runs against the live app. Failures are diagnosed from the trace, console and screenshot, with evidence in S3 and results on a React dashboard.',
+          'Built an evaluation harness whose LLM judge was calibrated against human labels (Cohen’s κ = 0.92). A full run on the authentication module passed 13 of 15 generated tests in 37 minutes for $0.78.',
         ],
       },
       {
         name: 'Proposal-writing skills for Claude',
-        period: 'Jun — Aug 2026',
         points: [
-          'Built eight Claude skills that write complete RFP responses in a 15-phase workflow: classify the bid, extract every requirement, draft each section in its own subagent from 29 indexed past proposals, and build the Word document.',
-          'Python quality gates check depth, voice, style and buyer-table fidelity, and the document isn’t built until they pass. Used on five real public-sector RFPs.',
+          'Replaced the RAG generator when the bid team needed drafts sooner than it could be ready: eight Claude skills draft RFP responses in a 15-phase workflow, classifying the bid, extracting every requirement, drafting each section in its own subagent from 29 indexed past proposals, and building the Word document.',
+          'Python quality gates check depth, voice, style and buyer-table fidelity, and the document isn’t built until they pass. Unknowns are flagged and legally binding fields left for a person to complete. Used on five real public-sector RFPs.',
         ],
       },
       {
         name: 'RAG proposal generator',
-        period: 'Apr — May 2026',
         points: [
-          'Built the retrieval core: hybrid search fusing BM25 with all-MiniLM embeddings in ChromaDB, parent-child chunking with top-5 reranking, claim-level evidence and client-confidentiality guardrails, with Claude writing, and fixed a silent schema bug that had failed query expansion on 100% of requests. Shelved mid-build when the team moved to the skills approach.',
+          'Built the retrieval core: hybrid search fusing BM25 with all-MiniLM embeddings in ChromaDB, parent-child chunking, per-section evidence routing, claim-level evidence and client-confidentiality guardrails, with Claude writing, and fixed a silent schema bug that had failed query expansion on 100% of requests. Shelved mid-build when the team moved to the skills approach.',
         ],
       },
     ],
-    stack: ['LangGraph', 'Amazon Bedrock', 'Playwright', 'pgvector', 'FastAPI', 'Claude skills', 'ChromaDB'],
+    stack: ['LangGraph', 'Amazon Bedrock', 'WebdriverIO', 'pgvector', 'FastAPI', 'Claude skills', 'ChromaDB'],
   },
   {
     period: 'Apr 2026',
@@ -159,5 +157,5 @@ export const stack: { group: string; items: string[] }[] = [
   { group: 'Machine learning', items: ['PyTorch', 'TensorFlow', 'Keras', 'scikit-learn', 'Hugging Face', 'OpenCV', 'Transfer learning', 'CNNs'] },
   { group: 'Languages & tools', items: ['Python', 'TypeScript', 'C++', 'SQL', 'Git', 'Docker'] },
   { group: 'Databases', items: ['PostgreSQL', 'pgvector', 'ChromaDB', 'MySQL'] },
-  { group: 'Backend & cloud', items: ['FastAPI', 'Node.js', 'React', 'Firebase', 'Amazon Bedrock', 'AWS (EC2, RDS, ECS, S3, SQS)', 'Playwright'] },
+  { group: 'Backend & cloud', items: ['FastAPI', 'Node.js', 'React', 'Firebase', 'Amazon Bedrock', 'AWS (EC2, RDS, ECS, S3, SQS)', 'WebdriverIO', 'Playwright'] },
 ];

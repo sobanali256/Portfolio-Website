@@ -100,13 +100,14 @@
 \resumeSubHeadingListStart
   \resumeSubheading
     {Ledelsea}{Remote}
-    {AI Intern --- RAG Pipelines \& Agentic Testing Platforms}{Apr 2026 -- Present}
+    {AI Intern --- RAG Pipelines \& Agentic Testing Platforms}{Apr 2026 -- Oct 2026}
     \resumeItemListStart
-      \resumeItem{Building an AI platform that writes end-to-end tests from source code: tree-sitter indexes Java and TypeScript repos into pgvector, and a LangGraph pipeline on AWS Bedrock maps business processes into test scenarios.}
-      \resumeItem{Human-approved cases become Playwright scripts that are statically checked and dry-run before running live; failures are diagnosed from traces, console logs and screenshots, with evidence in S3 and results on a React dashboard.}
-      \resumeItem{Built eight Claude skills that write complete RFP responses in a 15-phase workflow, drafting each section in its own subagent from 29 indexed past proposals; used on five real public-sector RFPs.}
-      \resumeItem{Wrote Python quality gates (depth, voice, style, buyer-table fidelity) that block the Word build until every check passes.}
-      \resumeItem{Built hybrid BM25 + embedding retrieval in ChromaDB with parent-child chunking and top-5 reranking; fixed a silent schema bug that failed query expansion on 100\% of requests.}
+      \resumeItem{Built a proof-of-concept AI platform that generated end-to-end tests from source code: tree-sitter indexed Java and TypeScript repos into pgvector, and a LangGraph pipeline on AWS Bedrock mapped business processes into test scenarios.}
+      \resumeItem{Turned human-approved cases into WebdriverIO scripts (migrated from Playwright) that were statically checked and dry-run before running live; failures were diagnosed from traces, console logs and screenshots, with evidence in S3 and results on a React dashboard.}
+      \resumeItem{Built an evaluation harness whose LLM judge was calibrated against human labels (Cohen's $\kappa$ = 0.92); a full run on the authentication module passed 13 of 15 generated tests in 37 min for \$0.78.}
+      \resumeItem{Built hybrid BM25 + embedding retrieval in ChromaDB with parent-child chunking and per-section evidence routing for an RFP proposal platform; fixed a silent schema bug that failed query expansion on 100\% of requests.}
+      \resumeItem{Replaced the RAG prototype, which could not be ready in time, with eight Claude skills that drafted RFP responses in a 15-phase workflow, one subagent per section, from 29 indexed past proposals; used on five public-sector RFPs.}
+      \resumeItem{Wrote Python quality gates (depth, voice, style, buyer-table fidelity) that blocked the Word build until every check passed; unknowns were flagged and legally binding fields left for human review.}
     \resumeItemListEnd
 \resumeSubHeadingListEnd
 
@@ -118,7 +119,7 @@
     \textbf{ML / DL:} PyTorch, TensorFlow, Keras, scikit-learn, Hugging Face, OpenCV, Transfer Learning, CNNs \\
     \textbf{Languages / Tools:} Python, TypeScript, C++, SQL, Git, Docker \\
     \textbf{Databases:} PostgreSQL, pgvector, ChromaDB, MySQL \\
-    \textbf{Backend / Cloud:} FastAPI, Node.js, React, Firebase, AWS (EC2, RDS, ECS Fargate, Bedrock, S3, SQS), Playwright
+    \textbf{Backend / Cloud:} FastAPI, Node.js, React, Firebase, AWS (EC2, RDS, ECS Fargate, Bedrock, S3, SQS), WebdriverIO, Playwright
   }
 \resumeSubHeadingListEnd
 
@@ -136,10 +137,10 @@
     \resumeItemListEnd
 
   \resumeProjectHeading
-    {\textbf{AniTrack} -- Anime Tracking PWA $|$ \emph{React, Vite, Firebase, Jikan API}}
+    {\textbf{AniTrack} -- Anime Tracking PWA $|$ \emph{React, Vite, Firebase, AniList API}}
     {\href{https://anitrack-a3031.web.app}{Live App}}
     \resumeItemListStart
-      \resumeItem{Built a PWA integrating the AniList API for anime tracking and push notifications via Cloud Functions.}
+      \resumeItem{Built a PWA integrating the AniList API with Jikan API as fallback for anime tracking and push notifications via Cloud Functions.}
       \resumeItem{Developed a content-based recommendation engine surfacing personalized suggestions from watch history.}
       \resumeItem{Designed an AI chat companion with multiple personalities, plus a guest mode usable before sign-up.}
     \resumeItemListEnd
