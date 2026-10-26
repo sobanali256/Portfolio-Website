@@ -25,6 +25,117 @@ const VECTORS = [
   [0.2, 0.6, 0.3, 0.75, 0.5, 0.25, 0.85, 0.4],
 ];
 
+// The same column of text cut three ways; an evidence span (lines EVIDENCE[0]–[1]) is split
+// by the small chunks and arrives whole in the larger ones.
+const EVIDENCE: [number, number] = [9, 12];
+const CUTS: { label: string; every: number }[] = [
+  { label: '128', every: 4 },
+  { label: '256', every: 8 },
+  { label: '512', every: 16 },
+];
+
+export function ChunkSizeCover({ className = '' }: { className?: string }) {
+  const colW = 172;
+  const colX = (i: number) => 72 + i * 232;
+  const y0 = 112;
+  const gap = 16;
+  const lineY = (i: number) => y0 + i * gap;
+  const lines = LINE_WIDTHS.slice(0, 18);
+
+  return (
+    <svg
+      viewBox="0 0 800 500"
+      role="img"
+      aria-label="One column of text cut into 128-, 256- and 512-token chunks; a highlighted evidence span is split across two small chunks but sits whole inside the larger ones."
+      className={className}
+    >
+      <defs>
+        <pattern id="size-cover-rule" width="800" height="24" patternUnits="userSpaceOnUse">
+          <line x1="0" y1="23.5" x2="800" y2="23.5" style={{ stroke: c('rule'), strokeOpacity: 0.6 }} />
+        </pattern>
+      </defs>
+
+      <rect width="800" height="500" style={{ fill: c('paper-2') }} />
+      <rect width="800" height="500" fill="url(#size-cover-rule)" />
+
+      <g className="font-mono" fontSize="11" letterSpacing="1.6" style={{ fill: c('muted') }}>
+        <text x="72" y="58">CHUNK SIZE × OVERLAP</text>
+        <text x="728" y="58" textAnchor="end">
+          BUDGET 2,048
+        </text>
+        <text x="72" y="452">EVIDENCE SPAN · 4 LINES</text>
+        <text x="728" y="452" textAnchor="end">
+          SPLIT / WHOLE / WHOLE
+        </text>
+      </g>
+      <line x1="72" y1="72" x2="728" y2="72" style={{ stroke: c('rule-strong') }} />
+      <line x1="72" y1="428" x2="728" y2="428" style={{ stroke: c('rule-strong') }} />
+
+      {CUTS.map(({ label, every }, col) => {
+        const x = colX(col);
+        const chunks = Array.from({ length: Math.ceil(lines.length / every) }, (_, k) => [
+          k * every,
+          Math.min((k + 1) * every, lines.length) - 1,
+        ]);
+        const whole = chunks.some(([a, b]) => a <= EVIDENCE[0] && b >= EVIDENCE[1]);
+        return (
+          <g key={label}>
+            <text x={x} y="98" className="font-mono" fontSize="11" letterSpacing="1" style={{ fill: c('ink') }}>
+              {`${label} TOKENS`}
+            </text>
+
+            {/* The evidence span */}
+            <rect
+              x={x - 8}
+              y={lineY(EVIDENCE[0]) - 7}
+              width={colW + 16}
+              height={lineY(EVIDENCE[1]) - lineY(EVIDENCE[0]) + 14}
+              rx="3"
+              style={{ fill: c('accent'), fillOpacity: whole ? 0.14 : 0.07 }}
+            />
+
+            {lines.map((w, i) => {
+              const evidence = i >= EVIDENCE[0] && i <= EVIDENCE[1];
+              return (
+                <rect
+                  key={i}
+                  x={x}
+                  y={lineY(i) - 2.5}
+                  width={colW * w}
+                  height="5"
+                  rx="2.5"
+                  style={{
+                    fill: evidence ? c('accent') : c('rule-strong'),
+                    fillOpacity: evidence ? (whole ? 0.85 : 0.5) : 1,
+                  }}
+                />
+              );
+            })}
+
+            {/* Chunk boundaries */}
+            {chunks.slice(1).map(([a]) => {
+              const y = (lineY(a - 1) + lineY(a)) / 2;
+              const cuts = a > EVIDENCE[0] && a <= EVIDENCE[1];
+              return (
+                <line
+                  key={a}
+                  x1={x - 14}
+                  y1={y}
+                  x2={x + colW + 14}
+                  y2={y}
+                  strokeDasharray={cuts ? undefined : '3 4'}
+                  strokeWidth={cuts ? 1.75 : 1}
+                  style={{ stroke: cuts ? c('accent') : c('muted') }}
+                />
+              );
+            })}
+          </g>
+        );
+      })}
+    </svg>
+  );
+}
+
 export function ChunkingCover({ className = '' }: { className?: string }) {
   const x0 = 72;
   const colW = 300;

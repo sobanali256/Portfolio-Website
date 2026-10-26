@@ -1,6 +1,6 @@
 import type { ComponentType } from 'react';
 import { profile } from '../data/content';
-import { ChunkingCover } from './covers';
+import { ChunkSizeCover, ChunkingCover } from './covers';
 
 // The writing index's description, also used for its link preview.
 export const BLOG_DESCRIPTION = `Writing by ${profile.name}: long-form notes on retrieval, agents, evaluation and the research behind the AI systems I build.`;
@@ -33,6 +33,28 @@ export const postPageDescription = (post: Post) => post.shareDescription ?? post
 // Newest first. Adding a post: put the Markdown (without its title) in
 // src/content/blog/<slug>.md and add an entry here.
 export const posts: Post[] = [
+  {
+    slug: 'chunk-size-and-overlap',
+    title: 'Chunk Size & Overlap: What Actually Changes Retrieval?',
+    titleAccent: 'What Actually Changes Retrieval?',
+    shareDescription:
+      'A pre-registered experiment on 100 QASPER papers: how chunk size and overlap change what a RAG retriever delivers.',
+    description:
+      'How chunk size and overlap change what a RAG retriever finds: the mechanisms, a controlled experiment on 100 research papers and 287 questions, and metrics that survive re-chunking.',
+    date: '2026-10-26',
+    readingMinutes: 17,
+    tags: ['RAG', 'Retrieval', 'Chunking', 'Evaluation'],
+    tldr: [
+      'Chunk size trades finding the evidence against receiving it whole: under a 2,048-token budget, 128-token chunks hit most often but delivered the evidence whole for only 0.32 of questions, against 0.48 at 256 tokens.',
+      'Compare sizes under an equal token budget, not only an equal K. At a fixed K, larger chunks win partly by sending more text and raising the random baseline.',
+      'Put a floor (Random Hit@K) and an upper bound (Completable) next to every score, so you can tell luck from ranking and ranking from chunking.',
+      'Overlap only guarantees facts up to O + 1 tokens, and real evidence is often longer. Its effect here was consistently positive but not statistically established.',
+      'Label evidence text rather than chunk IDs, fix the comparisons before you look, and run the experiment on your own data: none of these numbers transfer.',
+    ],
+    cover: ChunkSizeCover,
+    coverCaption: 'One evidence span, cut at 128, 256 and 512 tokens.',
+    loadBody: () => import('../content/blog/chunk-size-and-overlap.md?raw').then((m) => m.default),
+  },
   {
     slug: 'chunking-strategies-for-rag',
     title: 'Chunking Strategies for RAG: How to Choose the Right Approach',

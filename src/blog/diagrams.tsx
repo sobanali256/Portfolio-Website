@@ -151,8 +151,110 @@ function FailureMapDiagram() {
   );
 }
 
+// Complete@K per configuration: [mean, CI low, CI high], in overlap order 0 / 10 / 20%.
+// Completable (the chunk-fit upper bound) depends only on how the text was cut, so both panels share it.
+const SIZES = [128, 256, 512];
+const OVERLAPS = ['0%', '10%', '20%'];
+const COMPLETABLE = [
+  [0.401, 0.454, 0.557],
+  [0.641, 0.746, 0.858],
+  [0.805, 0.892, 0.966],
+];
+const COMPLETE_PANELS: { title: string; values: [number, number, number][][] }[] = [
+  {
+    title: 'Equal budget: 2,048 tokens (K = 16 / 8 / 4)',
+    values: [
+      [[0.323, 0.263, 0.386], [0.35, 0.289, 0.412], [0.411, 0.347, 0.476]],
+      [[0.482, 0.41, 0.551], [0.552, 0.485, 0.618], [0.564, 0.498, 0.628]],
+      [[0.543, 0.474, 0.613], [0.592, 0.526, 0.657], [0.614, 0.541, 0.684]],
+    ],
+  },
+  {
+    title: 'Equal K = 5 (larger chunks send more text)',
+    values: [
+      [[0.2, 0.15, 0.25], [0.24, 0.18, 0.29], [0.27, 0.21, 0.33]],
+      [[0.38, 0.31, 0.44], [0.46, 0.39, 0.53], [0.46, 0.39, 0.53]],
+      [[0.6, 0.53, 0.67], [0.65, 0.59, 0.71], [0.68, 0.61, 0.75]],
+    ],
+  },
+];
+
+function CompleteByConfigDiagram() {
+  const panelW = 316, gap = 40, x0 = 64, top = 92, h = 220;
+  const Y = (v: number) => top + h - v * h;
+  // 0% overlap is a hollow ink dot, 10% a solid ink dot, 20% the accent.
+  const mark = (i: number) =>
+    i === 0
+      ? { fill: 'var(--paper)', stroke: 'currentColor' }
+      : i === 1
+        ? { fill: 'currentColor', stroke: 'currentColor' }
+        : { fill: accent, stroke: accent };
+  return (
+    <Svg
+      label="Complete@K by chunk size and overlap, with 95% intervals and the Completable upper bound. Under an equal 2,048-token budget, Complete@K rises from about 0.32–0.41 at 128 tokens to 0.48–0.56 at 256 and 0.54–0.61 at 512; at a fixed K of 5 it rises from 0.20–0.27 to 0.60–0.68. Overlap raises it slightly at every size, and the upper bound climbs from 0.40 to 0.97."
+      viewBox="0 20 760 350"
+    >
+      <g fontSize={11.5}>
+        {OVERLAPS.map((label, i) => (
+          <g key={label} transform={`translate(${x0 + i * 110} 40)`}>
+            <circle cx={5} cy={-4} r={4.5} strokeWidth={1.5} {...mark(i)} />
+            <text x={16} y={0} {...ink}>{label} overlap</text>
+          </g>
+        ))}
+        <g transform={`translate(${x0 + 330} 40)`}>
+          <path d="M0 -4H14" stroke="currentColor" strokeOpacity={0.5} strokeWidth={2} />
+          <text x={22} y={0} {...ink}>Completable (upper bound)</text>
+        </g>
+      </g>
+      {COMPLETE_PANELS.map((panel, p) => {
+        const px = x0 + p * (panelW + gap);
+        const groupW = panelW / SIZES.length;
+        return (
+          <g key={panel.title}>
+            <text x={px} y={top - 14} fontSize={11.5} {...quiet}>{panel.title}</text>
+            {[0, 0.2, 0.4, 0.6, 0.8, 1].map((v) => (
+              <g key={v}>
+                <path d={`M${px} ${Y(v)}H${px + panelW}`} stroke="currentColor" strokeOpacity={v === 0 ? 0.5 : 0.12} />
+                {p === 0 && (
+                  <text x={px - 10} y={Y(v) + 4} textAnchor="end" fontSize={11} {...quiet}>{v.toFixed(1)}</text>
+                )}
+              </g>
+            ))}
+            {SIZES.map((size, s) => {
+              const cx = px + groupW * (s + 0.5);
+              return (
+                <g key={size}>
+                  <text x={cx} y={top + h + 20} textAnchor="middle" fontSize={12} {...ink}>{size}</text>
+                  {panel.values[s].map(([mean, lo, hi], o) => {
+                    const x = cx + (o - 1) * 24;
+                    const color = o === 2 ? accent : 'currentColor';
+                    return (
+                      <g key={o}>
+                        <path d={`M${x - 8} ${Y(COMPLETABLE[s][o])}H${x + 8}`} stroke={color} strokeOpacity={0.5} strokeWidth={2} />
+                        <path d={`M${x} ${Y(hi)}V${Y(lo)}M${x - 3.5} ${Y(hi)}H${x + 3.5}M${x - 3.5} ${Y(lo)}H${x + 3.5}`} stroke={color} strokeWidth={1.25} fill="none" />
+                        <circle cx={x} cy={Y(mean)} r={4.5} strokeWidth={1.5} {...mark(o)} />
+                      </g>
+                    );
+                  })}
+                </g>
+              );
+            })}
+            <text x={px + panelW / 2} y={top + h + 42} textAnchor="middle" fontSize={11.5} {...quiet}>Chunk size (tokens)</text>
+          </g>
+        );
+      })}
+      <text transform={`translate(18 ${top + h / 2}) rotate(-90)`} textAnchor="middle" fontSize={11.5} {...quiet}>Complete@K</text>
+    </Svg>
+  );
+}
+
 export const diagrams: Record<string, { caption: string; render: () => ReactNode }> = {
   'rag-pipeline': { caption: 'The chunk, not the document, is what the LLM gets to see.', render: RagPipelineDiagram },
   overlap: { caption: 'Each chunk repeats the last 64 tokens of the one before.', render: OverlapDiagram },
   'failure-map': { caption: 'Every retrieval miss points to a specific fix.', render: FailureMapDiagram },
+  'complete-by-config': {
+    caption:
+      'Complete@K for each configuration, with 95% paper-bootstrap intervals. Left: an equal budget of 2,048 tokens. Right: a fixed K = 5, so larger chunks send more text. The dashes mark Completable, the most Complete@K could reach given how the text was cut. 100 papers, 287 questions.',
+    render: CompleteByConfigDiagram,
+  },
 };

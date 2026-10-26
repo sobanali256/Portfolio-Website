@@ -159,6 +159,8 @@ export default function Markdown({ body }: { body: string }) {
           };
           return <a href={href} onClick={onClick}>{children}</a>;
         }
+        // Links to other pages on the site (e.g. an earlier post) stay in the tab.
+        if (href.startsWith('/')) return <a href={href}>{children}</a>;
         return (
           <a href={href} target="_blank" rel="noopener noreferrer">
             {children}
